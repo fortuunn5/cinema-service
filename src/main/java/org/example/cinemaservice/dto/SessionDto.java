@@ -1,5 +1,6 @@
 package org.example.cinemaservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,14 +18,15 @@ import java.util.Date;
 @Setter
 public class SessionDto {
     private Long id;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date startDate;
     private int duration;
     private DisplayFormat displayFormat;
     private int price;
-//    private HallDto hallDto;
-//    private MovieDto movieDto;
     private Long hallId;
     private Long movieId;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    private Date endDate;
 
     public Session toEntity() {
         Session session = new Session();
@@ -33,6 +35,7 @@ public class SessionDto {
         session.setDuration(duration);
         session.setDisplayFormat(displayFormat);
         session.setPrice(price);
+        session.setEndDate(endDate);
         if (hallId != null) {
             Hall hall = new Hall();
             hall.setId(hallId);
@@ -47,7 +50,7 @@ public class SessionDto {
     }
 
     public static SessionDto ofEntity(Session session) {
-        if (session!=null) {
+        if (session != null) {
             SessionDto sessionDto = new SessionDto();
             sessionDto.setId(session.getId());
             sessionDto.setStartDate(session.getStartDate());
@@ -56,6 +59,7 @@ public class SessionDto {
             sessionDto.setPrice(session.getPrice());
             sessionDto.setHallId(session.getHall().getId());
             sessionDto.setMovieId(session.getMovie().getId());
+            sessionDto.setEndDate(session.getEndDate());
             return sessionDto;
         }
         return null;

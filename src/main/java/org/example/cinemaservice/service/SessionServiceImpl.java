@@ -1,6 +1,7 @@
 package org.example.cinemaservice.service;
 
 
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.SessionDto;
@@ -8,6 +9,7 @@ import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.repository.SessionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,6 +22,9 @@ public class SessionServiceImpl implements SessionService {
     public SessionDto createSession(Session newSession) {
         if (newSession.getId() != null) {
             throw new IllegalArgumentException("Session id already exists");
+        }
+        if (hasConflictedTime(newSession)) {
+            throw new IllegalArgumentException("Session has conflicted time");
         }
         return sessionRepository.save(newSession);
     }
@@ -34,14 +39,17 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public List<SessionDto> getAllSessions() {
-        return sessionRepository.readAll();
+    public List<SessionDto> getSessions(@Nullable Long movieId, @Nullable Date date, @Nullable Long hallId) {
+        return sessionRepository.readAll(movieId, date, hallId);
     }
 
     @Override
     public SessionDto updateSession(Session upSession) {
         if (upSession.getId() == null || sessionRepository.readById(upSession.getId()) == null) {
             throw new IllegalArgumentException("Session not found");
+        }
+        if (hasConflictedTime(upSession)) {
+            throw new IllegalArgumentException("Session has conflicted time");
         }
         return sessionRepository.update(upSession);
     }
@@ -52,5 +60,9 @@ public class SessionServiceImpl implements SessionService {
             return true;
         }
         throw new IllegalArgumentException("Session not found");
+    }
+
+    private boolean hasConflictedTime(Session session) {
+        return sessionRepository.hasConflictedTime(session.getHall().getId(), session.getStartDate(), session.getEndDate());
     }
 }

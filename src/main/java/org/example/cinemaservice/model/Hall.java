@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+//todo: добавить поле "доступен ли"
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

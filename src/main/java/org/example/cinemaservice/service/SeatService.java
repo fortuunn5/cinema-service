@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface SeatService {
     SeatDto createSeat(Seat newSeat);
+
     SeatDto getSeatById(Long id);
+
     List<SeatDto> getAllSeats();
+
     SeatDto updateSeat(Seat upSeat);
+
     boolean deleteSeatById(Long id);
 }

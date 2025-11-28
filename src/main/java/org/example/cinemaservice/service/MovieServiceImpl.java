@@ -1,8 +1,10 @@
 package org.example.cinemaservice.service;
 
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.MovieDto;
+import org.example.cinemaservice.model.Genre;
 import org.example.cinemaservice.model.Movie;
 import org.example.cinemaservice.repository.MovieRepository;
 import org.springframework.stereotype.Service;
@@ -42,8 +44,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDto> getAllMovies() {
-        return movieRepository.readAll();
+    public List<MovieDto> getMovies(@Nullable List<Genre> genres) {
+        return movieRepository.readAll(genres);
     }
 
     @Override

@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface ReservationRepository {
     ReservationDto save(Reservation reservation);
+
     ReservationDto readById(Long id);
+
     List<ReservationDto> readAll();
+
     ReservationDto update(Reservation reservation);
+
     boolean deleteById(Long id);
 }

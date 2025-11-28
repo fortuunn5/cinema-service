@@ -27,6 +27,7 @@ public class Movie {
     @Column(name = "genre")
     private List<Genre> genres;
 
+    //todo: сделать фильтрацию по длительности
     private int duration;
 
     private String description;

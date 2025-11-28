@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -40,7 +41,25 @@ public class Session {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    private Date endDate;
+
     public Session(Long id) {
         this.id = id;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void calculateEndDate() {
+        if (startDate != null && duration != 0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+            calendar.add(Calendar.MINUTE, duration);
+            this.endDate = calendar.getTime();
+        }
+    }
+
+    public Date getEndDate() {
+        calculateEndDate();
+        return endDate;
     }
 }

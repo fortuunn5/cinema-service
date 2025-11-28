@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface HallRepository {
     HallDto save(Hall newHall);
+
     HallDto readById(Long id);
+
     List<HallDto> readAll();
+
     HallDto update(Hall upHall);
+
     boolean deleteById(Long id);
 }

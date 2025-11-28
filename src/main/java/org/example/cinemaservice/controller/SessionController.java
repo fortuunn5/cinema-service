@@ -2,12 +2,13 @@ package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.SessionDto;
-import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.service.SessionService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,14 @@ public class SessionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SessionDto>> getAllSessions() {
-        return new ResponseEntity<>(sessionService.getAllSessions(), HttpStatus.OK);
+    public ResponseEntity<List<SessionDto>> getAllSessions(@RequestParam(name = "movieId", required = false)
+                                                           Long movieId,
+                                                           @RequestParam(name = "date", required = false)
+                                                           @DateTimeFormat(pattern = "dd.MM.yyyy")
+                                                           Date date,
+                                                           @RequestParam(name = "hallId", required = false)
+                                                           Long hallId) {
+        return new ResponseEntity<>(sessionService.getSessions(movieId, date, hallId), HttpStatus.OK);
     }
 
     @PutMapping

@@ -2,8 +2,7 @@ package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.MovieDto;
-import org.example.cinemaservice.model.Movie;
-import org.example.cinemaservice.repository.MovieRepository;
+import org.example.cinemaservice.model.Genre;
 import org.example.cinemaservice.service.MovieService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +32,8 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieDto>> getAllMovies() {
-        return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
+    public ResponseEntity<List<MovieDto>> getAllMovies(@RequestParam(name = "genres", required = false) List<Genre> genres) {
+        return new ResponseEntity<>(movieService.getMovies(genres), HttpStatus.OK);
     }
 
     @PutMapping
