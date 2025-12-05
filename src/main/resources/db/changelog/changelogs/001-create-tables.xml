@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="1" author="fortuunn5">
+        <sql>
+            create table hall
+            (
+                id bigint primary key,
+                capacity integer not null check (capacity >= 2),
+                name varchar(255)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2" author="fortuunn5">
+        <sql>
+            create table movie
+            (
+                id bigint primary key,
+                description varchar(255) not null,
+                duration integer not null,
+                name varchar(255) unique
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="3" author="fortuunn5">
+        <sql>
+            create table movie_genres
+            (
+                movie_id bigint not null references movie,
+                genre varchar(255) check ((genre)::text = ANY
+                    ((ARRAY ['BIOGRAPHY'::character varying,
+                    'ACTION'::character varying,
+                    'DETECTIVE'::character varying,
+                    'DOCUMENTARY'::character varying,
+                    'DRAMA'::character varying,
+                    'HISTORICAL'::character varying,
+                    'COMEDY'::character varying,
+                    'CRIME'::character varying,
+                    'ROMANCE'::character varying,
+                    'MYSTERY'::character varying,
+                    'ANIMATION'::character varying,
+                    'MUSICAL'::character varying,
+                    'ADVENTURE'::character varying,
+                    'THRILLER'::character varying,
+                    'HORROR'::character varying,
+                    'SCIENCE_FICTION'::character varying,
+                    'FANTASY'::character varying])::text[]))
+                );
+        </sql>
+    </changeSet>
+    <changeSet id="4" author="fortuunn5">
+        <sql>
+            create table seat
+            (
+                id bigint not null primary key,
+                number integer not null,
+                row integer not null,
+                hall_id bigint not null references hall,
+                unique (row, number, hall_id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="5" author="fortuunn5">
+        <sql>
+            create table session
+            (
+                id bigint primary key,
+                display_format varchar(255) not null check ((display_format)::text = ANY ((ARRAY ['_2D'::character varying, '_3D'::character varying])::text[])),
+                duration integer not null,
+                end_date timestamp(6),
+                price integer not null check (price >= 0),
+                start_date timestamp(6) not null,
+                hall_id bigint not null references hall,
+                movie_id bigint not null references movie
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="6" author="fortuunn5">
+        <sql>
+            create table reservation
+            (
+                id bigint primary key,
+                contact_email varchar(255) not null,
+                price integer not null check (price >= 0),
+                status varchar(255) check ((status)::text = ANY
+                    ((ARRAY ['RESERVED'::character varying,
+                    'PAID'::character varying,
+                    'CANCELLED'::character varying])::text[])),
+                session_id bigint not null references session
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="7" author="fortuunn5">
+        <sql>
+            create table reservation_seats
+            (
+                reservation_id bigint not null references reservation,
+                seats_id bigint not null unique references seat
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
