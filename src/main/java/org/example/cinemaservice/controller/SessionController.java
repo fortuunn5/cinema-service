@@ -1,7 +1,9 @@
 package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.dto.SessionDto;
+import org.example.cinemaservice.service.SeatService;
 import org.example.cinemaservice.service.SessionService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequestMapping("/sessions")
 public class SessionController {
     private final SessionService sessionService;
+    private final SeatService seatService;
 
     @PostMapping
     public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto newSession) {
@@ -36,6 +39,11 @@ public class SessionController {
                                                            @RequestParam(name = "hallId", required = false)
                                                            Long hallId) {
         return new ResponseEntity<>(sessionService.getSessions(movieId, date, hallId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/seats")
+    public ResponseEntity<List<SeatWithIsReservedDto>> getAllSeatsWithIsFreeBySessionId(@PathVariable Long id) {
+        return new ResponseEntity<>(seatService.getSeatsWithIsFreeBySessionId(id), HttpStatus.OK);
     }
 
     @PutMapping

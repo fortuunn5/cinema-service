@@ -8,6 +8,8 @@ import java.util.List;
 public interface ReservationService {
     ReservationDto createReservation(Reservation newReservation);
 
+    ReservationDto createReservation(ReservationDto newReservation);
+
     ReservationDto getReservationById(Long id);
 
     List<ReservationDto> getAllReservations();
@@ -15,4 +17,6 @@ public interface ReservationService {
     ReservationDto updateReservation(Reservation upReservation);
 
     boolean deleteReservationById(Long id);
+
+    boolean cancelReservationsByIds(List<Long> ids);
 }

@@ -2,7 +2,6 @@ package org.example.cinemaservice.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,12 +31,8 @@ public class Reservation {
     @Min(0)
     private int price;
 
-//    @Column(nullable = false)
-//    @Min(1)
-//    @Max(5)
-//    private int seatCount;
-
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "reservation_seat")
     @Column(nullable = false)
     private List<Seat> seats;
 

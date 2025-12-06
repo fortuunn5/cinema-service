@@ -47,9 +47,14 @@ public class HallRepositoryImpl implements HallRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        Query query = em.createQuery("DELETE FROM Hall h WHERE h.id = :id");
-        query.setParameter("id", id);
-        int count = query.executeUpdate();
+        Query deleteSeatsQuery = em.createQuery("DELETE FROM Seat s WHERE s.hall.id = :hallId");
+        deleteSeatsQuery.setParameter("hallId", id);
+        deleteSeatsQuery.executeUpdate();
+
+        Query deleteHallQuery = em.createQuery("DELETE FROM Hall h WHERE h.id = :id");
+        deleteHallQuery.setParameter("id", id);
+        int count = deleteHallQuery.executeUpdate();
+
         return count != 0;
     }
 }

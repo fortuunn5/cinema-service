@@ -51,4 +51,10 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         int count = query.executeUpdate();
         return count != 0;
     }
+
+    public int cancelByIds(List<Long> ids) {
+        Query query = em.createQuery("DELETE FROM Reservation r WHERE r.id IN(:ids)");
+        query.setParameter("ids", ids);
+        return query.executeUpdate();
+    }
 }

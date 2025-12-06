@@ -1,6 +1,7 @@
 package org.example.cinemaservice.repository;
 
 import org.example.cinemaservice.dto.SeatDto;
+import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.model.Seat;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface SeatRepository {
     SeatDto update(Seat upSeat);
 
     boolean deleteById(Long id);
+
+    List<SeatWithIsReservedDto> readWithIsFreeBySessionId(Long sessionId);
 }

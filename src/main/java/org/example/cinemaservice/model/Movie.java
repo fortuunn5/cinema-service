@@ -28,8 +28,10 @@ public class Movie {
     private List<Genre> genres;
 
     //todo: сделать фильтрацию по длительности
+    @Column(nullable = false)
     private int duration;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
     @OneToMany(mappedBy = "movie")

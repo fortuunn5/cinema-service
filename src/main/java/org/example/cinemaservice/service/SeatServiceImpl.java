@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.HallDto;
 import org.example.cinemaservice.dto.SeatDto;
-import org.example.cinemaservice.model.Hall;
+import org.example.cinemaservice.dto.SeatWithIsReservedDto;
+import org.example.cinemaservice.dto.SessionDto;
 import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.repository.SeatRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class SeatServiceImpl implements SeatService {
     private final SeatRepository seatRepository;
     private final HallService hallService;
+    private final SessionService sessionService;
 
     @Override
     public SeatDto createSeat(Seat newSeat) {
@@ -59,5 +61,14 @@ public class SeatServiceImpl implements SeatService {
             return true;
         }
         throw new IllegalArgumentException("Seat not found");
+    }
+
+    @Override
+    public List<SeatWithIsReservedDto> getSeatsWithIsFreeBySessionId(Long sessionId) {
+        if (sessionId == null) {
+            throw new IllegalArgumentException("Session id not null");
+        }
+        SessionDto sessionDto = sessionService.getSessionById(sessionId);
+        return seatRepository.readWithIsFreeBySessionId(sessionId);
     }
 }

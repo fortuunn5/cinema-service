@@ -2,7 +2,6 @@ package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
-import org.example.cinemaservice.model.Reservation;
 import org.example.cinemaservice.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto newReservation) {
-        return new ResponseEntity<>(reservationService.createReservation(newReservation.toEntity()), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.createReservation(newReservation), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
