@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
 import org.example.cinemaservice.model.Reservation;
+import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Transactional
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
+    private final SessionService sessionService;
 
     @Override
     public ReservationDto createReservation(Reservation newReservation) {
@@ -25,6 +27,20 @@ public class ReservationServiceImpl implements ReservationService {
             throw new IllegalArgumentException("Seats count must be between 1 and 5");
         }
         return reservationRepository.save(newReservation);
+    }
+
+    @Override
+    public ReservationDto createReservation(ReservationDto newReservation) {
+        if (newReservation.getId() != null) {
+            throw new IllegalArgumentException("Reservation id already exists");
+        }
+        Reservation r = newReservation.toEntity();
+        Session s = sessionService.getSessionById(r.getSession().getId()).toEntity();
+        r.setSession(s);
+        if (r.getSeatsCount() < 1 || r.getSeatsCount() > 5) {
+            throw new IllegalArgumentException("Seats count must be between 1 and 5");
+        }
+        return reservationRepository.save(r);
     }
 
     @Override

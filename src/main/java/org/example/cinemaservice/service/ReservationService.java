@@ -8,6 +8,8 @@ import java.util.List;
 public interface ReservationService {
     ReservationDto createReservation(Reservation newReservation);
 
+    ReservationDto createReservation(ReservationDto newReservation);
+
     ReservationDto getReservationById(Long id);
 
     List<ReservationDto> getAllReservations();
