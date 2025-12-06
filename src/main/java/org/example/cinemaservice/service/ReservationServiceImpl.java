@@ -72,4 +72,13 @@ public class ReservationServiceImpl implements ReservationService {
         }
         throw new IllegalArgumentException("Reservation not found");
     }
+
+    @Override
+    public boolean cancelReservationsByIds(List<Long> ids) {
+        int count = reservationRepository.cancelByIds(ids);
+        if (count == ids.size()) {
+            return true;
+        }
+        throw new IllegalArgumentException("Not all reservations are cancelled");
+    }
 }

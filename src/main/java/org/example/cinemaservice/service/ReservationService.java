@@ -17,4 +17,6 @@ public interface ReservationService {
     ReservationDto updateReservation(Reservation upReservation);
 
     boolean deleteReservationById(Long id);
+
+    boolean cancelReservationsByIds(List<Long> ids);
 }

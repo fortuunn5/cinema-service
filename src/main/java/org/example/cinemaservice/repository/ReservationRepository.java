@@ -15,4 +15,6 @@ public interface ReservationRepository {
     ReservationDto update(Reservation reservation);
 
     boolean deleteById(Long id);
+
+    int cancelByIds(List<Long> ids);
 }
