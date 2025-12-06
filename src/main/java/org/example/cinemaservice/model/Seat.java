@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UniqueSeatAndHall", columnNames = {"row", "number", "hall_id"})})
 public class Seat {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
