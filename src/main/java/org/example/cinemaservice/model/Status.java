@@ -1,10 +1,10 @@
 package org.example.cinemaservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public enum Status {
     RESERVED("забронировано"),
     PAID("оплачено"),
@@ -12,9 +12,15 @@ public enum Status {
 
     private final String value;
 
+    @JsonValue
+    public String getStatus() {
+        return value;
+    }
+
+    @JsonCreator
     public static Status getStatusByValue(String value) {
         for (Status status : Status.values()) {
-            if (status.getValue().equals(value)) {
+            if (status.getStatus().equals(value)) {
                 return status;
             }
         }

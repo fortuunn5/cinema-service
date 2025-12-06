@@ -1,19 +1,25 @@
 package org.example.cinemaservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public enum DisplayFormat {
     _2D("2D"),
     _3D("3D");
 
     private final String value;
 
+    @JsonValue
+    public String getDisplayFormat() {
+        return value;
+    }
+
+    @JsonCreator
     public static DisplayFormat getDisplayFormatByValue(String value) {
         for (DisplayFormat displayFormat : DisplayFormat.values()) {
-            if (displayFormat.value.equals(value)) {
+            if (displayFormat.getDisplayFormat().equals(value)) {
                 return displayFormat;
             }
         }

@@ -1,11 +1,11 @@
 package org.example.cinemaservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-//todo: сделать геттер и навесить аннотацию @JsonValue
 @AllArgsConstructor
-@Getter
 public enum Genre {
     BIOGRAPHY("биография"),
     ACTION("боевик"),
@@ -27,9 +27,15 @@ public enum Genre {
 
     private final String value;
 
+    @JsonValue
+    public String getGenre() {
+        return value;
+    }
+
+    @JsonCreator
     public static Genre getGenreByValue(String genre) {
         for (Genre g : Genre.values()) {
-            if (g.value.equals(genre)) {
+            if (g.getGenre().equals(genre)) {
                 return g;
             }
         }
