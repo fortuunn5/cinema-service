@@ -8,7 +8,7 @@
         <sql>
             create table hall
             (
-                id bigint primary key,
+                id bigserial primary key,
                 capacity integer not null check (capacity >= 2),
                 name varchar(255)
             );
@@ -18,8 +18,8 @@
         <sql>
             create table movie
             (
-                id bigint primary key,
-                description varchar(255) not null,
+                id bigserial primary key,
+                description text not null,
                 duration integer not null,
                 name varchar(255) unique
             );
@@ -47,7 +47,7 @@
                     'THRILLER'::character varying,
                     'HORROR'::character varying,
                     'SCIENCE_FICTION'::character varying,
-                    'FANTASY'::character varying])::text[]))
+                    'FANTASY'::character varying])::text[])) not null
                 );
         </sql>
     </changeSet>
@@ -55,7 +55,7 @@
         <sql>
             create table seat
             (
-                id bigint not null primary key,
+                id bigserial not null primary key,
                 number integer not null,
                 row integer not null,
                 hall_id bigint not null references hall,
@@ -67,12 +67,12 @@
         <sql>
             create table session
             (
-                id bigint primary key,
+                id bigserial primary key,
                 display_format varchar(255) not null check ((display_format)::text = ANY ((ARRAY ['_2D'::character varying, '_3D'::character varying])::text[])),
                 duration integer not null,
-                end_date timestamp(6),
+                end_date timestamp(0),
                 price integer not null check (price >= 0),
-                start_date timestamp(6) not null,
+                start_date timestamp(0) not null,
                 hall_id bigint not null references hall,
                 movie_id bigint not null references movie
             );
@@ -82,7 +82,7 @@
         <sql>
             create table reservation
             (
-                id bigint primary key,
+                id bigserial primary key,
                 contact_email varchar(255) not null,
                 price integer not null check (price >= 0),
                 status varchar(255) check ((status)::text = ANY
@@ -95,10 +95,10 @@
     </changeSet>
     <changeSet id="7" author="fortuunn5">
         <sql>
-            create table reservation_seats
+            create table reservation_seat
             (
                 reservation_id bigint not null references reservation,
-                seats_id bigint not null unique references seat
+                seats_id bigint not null references seat
             );
         </sql>
     </changeSet>
