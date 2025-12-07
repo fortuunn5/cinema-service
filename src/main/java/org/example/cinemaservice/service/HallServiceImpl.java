@@ -2,7 +2,9 @@ package org.example.cinemaservice.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.cinemaservice.ContextListenerUtil;
 import org.example.cinemaservice.dto.HallDto;
+import org.example.cinemaservice.listener.BaseDeleteModificationListener;
 import org.example.cinemaservice.model.Hall;
 import org.example.cinemaservice.repository.HallRepository;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,10 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public boolean deleteHallById(Long id) {
+        List<BaseDeleteModificationListener> baseDeleteModificationListeners = ContextListenerUtil.deleteListeners.get(Hall.class);
+        baseDeleteModificationListeners.forEach(x -> {
+            // handle
+        });
         if (hallRepository.deleteById(id)) {
             return true;
         }
