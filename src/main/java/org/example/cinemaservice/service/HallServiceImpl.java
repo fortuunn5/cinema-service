@@ -4,9 +4,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.HallDto;
 import org.example.cinemaservice.model.Hall;
+import org.example.cinemaservice.observer.DeleteHallEvent;
+import org.example.cinemaservice.observer.HallPublisher;
 import org.example.cinemaservice.repository.HallRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,6 +17,7 @@ import java.util.List;
 @Transactional
 public class HallServiceImpl implements HallService {
     private final HallRepository hallRepository;
+    private final HallPublisher hallPublisher;
 
     @Override
     public HallDto createHall(Hall newHall) {
@@ -47,6 +51,7 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public boolean deleteHallById(Long id) {
+        hallPublisher.publishEvent(new DeleteHallEvent(id, LocalDateTime.now()));
         if (hallRepository.deleteById(id)) {
             return true;
         }

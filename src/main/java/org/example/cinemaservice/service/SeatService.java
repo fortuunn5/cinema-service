@@ -17,5 +17,7 @@ public interface SeatService {
 
     boolean deleteSeatById(Long id);
 
+    int deleteAllSeatsByHallId(Long hallId);
+
     List<SeatWithIsReservedDto> getSeatsWithIsFreeBySessionId(Long sessionId);
 }

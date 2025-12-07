@@ -17,5 +17,7 @@ public interface SeatRepository {
 
     boolean deleteById(Long id);
 
+    int deleteAllByHallId(Long hallId);
+
     List<SeatWithIsReservedDto> readWithIsFreeBySessionId(Long sessionId);
 }

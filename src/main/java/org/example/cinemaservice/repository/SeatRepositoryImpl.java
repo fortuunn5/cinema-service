@@ -55,6 +55,13 @@ public class SeatRepositoryImpl implements SeatRepository {
     }
 
     @Override
+    public int deleteAllByHallId(Long hallId) {
+        Query deleteSeatsQuery = em.createQuery("DELETE FROM Seat s WHERE s.hall.id = :hallId");
+        deleteSeatsQuery.setParameter("hallId", hallId);
+        return deleteSeatsQuery.executeUpdate();
+    }
+
+    @Override
     public List<SeatWithIsReservedDto> readWithIsFreeBySessionId(Long sessionId) {
         String qString = """
                 SELECT new org.example.cinemaservice.dto.SeatWithIsReservedDto(

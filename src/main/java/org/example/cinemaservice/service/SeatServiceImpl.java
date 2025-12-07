@@ -64,6 +64,11 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    public int deleteAllSeatsByHallId(Long hallId) {
+        return seatRepository.deleteAllByHallId(hallId);
+    }
+
+    @Override
     public List<SeatWithIsReservedDto> getSeatsWithIsFreeBySessionId(Long sessionId) {
         if (sessionId == null) {
             throw new IllegalArgumentException("Session id not null");
