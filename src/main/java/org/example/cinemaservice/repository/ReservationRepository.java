@@ -12,6 +12,14 @@ public interface ReservationRepository {
 
     List<ReservationDto> readAll();
 
+    List<ReservationDto> readAllByHallId(Long hallId);
+
+    List<ReservationDto> readAllBySeatId(Long seatId);
+
+    List<ReservationDto> readAllByMovieId(Long movieId);
+
+    List<ReservationDto> readAllBySessionId(Long sessionId);
+
     ReservationDto update(Reservation reservation);
 
     boolean deleteById(Long id);

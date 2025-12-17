@@ -40,6 +40,34 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
+    public List<ReservationDto> readAllByHallId(Long hallId) {
+        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.hall.id = :hallId", Reservation.class);
+        query.setParameter("hallId", hallId);
+        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
+    }
+
+    @Override
+    public List<ReservationDto> readAllBySeatId(Long seatId) {
+        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.id IN (SELECT rs.reservation.id FROM ReservationSeat rs WHERE rs.seat.id = :seatId)", Reservation.class);
+        query.setParameter("seatId", seatId);
+        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
+    }
+
+    @Override
+    public List<ReservationDto> readAllByMovieId(Long movieId) {
+        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.movie.id = :movieId", Reservation.class);
+        query.setParameter("movieId", movieId);
+        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
+    }
+
+    @Override
+    public List<ReservationDto> readAllBySessionId(Long sessionId) {
+        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.id = :sessionId", Reservation.class);
+        query.setParameter("sessionId", sessionId);
+        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
+    }
+
+    @Override
     public ReservationDto update(Reservation newReservation) {
         return ReservationDto.ofEntity(em.merge(newReservation));
     }

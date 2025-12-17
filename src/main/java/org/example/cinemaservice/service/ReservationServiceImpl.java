@@ -58,6 +58,25 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationDto> getAllReservationsByHallId(Long hallId) {
+        return reservationRepository.readAllByHallId(hallId);
+    }
+
+    public List<ReservationDto> getAllReservationsBySeatId(Long seatId) {
+        return reservationRepository.readAllBySeatId(seatId);
+    }
+
+    @Override
+    public List<ReservationDto> getAllReservationsByMovieId(Long movieId) {
+        return reservationRepository.readAllByMovieId(movieId);
+    }
+
+    @Override
+    public List<ReservationDto> getAllReservationsBySessionId(Long sessionId) {
+        return reservationRepository.readAllBySessionId(sessionId);
+    }
+
+    @Override
     public ReservationDto updateReservation(Reservation upReservation) {
         if (upReservation.getId() == null || reservationRepository.readById(upReservation.getId()) == null) {
             throw new IllegalArgumentException("Reservation not found");

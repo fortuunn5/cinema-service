@@ -14,6 +14,14 @@ public interface ReservationService {
 
     List<ReservationDto> getAllReservations();
 
+    List<ReservationDto> getAllReservationsByHallId(Long hallId);
+
+    List<ReservationDto> getAllReservationsBySeatId(Long seatId);
+
+    List<ReservationDto> getAllReservationsByMovieId(Long movieId);
+
+    List<ReservationDto> getAllReservationsBySessionId(Long sessionId);
+
     ReservationDto updateReservation(Reservation upReservation);
 
     boolean deleteReservationById(Long id);
