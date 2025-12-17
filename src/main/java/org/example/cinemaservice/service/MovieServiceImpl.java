@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.MovieDto;
 import org.example.cinemaservice.model.Genre;
 import org.example.cinemaservice.model.Movie;
+import org.example.cinemaservice.observer.event.movie.DeleteMovieEvent;
+import org.example.cinemaservice.observer.publisher.MoviePublisher;
 import org.example.cinemaservice.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,6 +19,7 @@ import java.util.List;
 @Transactional
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
+    private final MoviePublisher moviePublisher;
 
     @Override
     public MovieDto createMovie(Movie newMovie) {
@@ -58,6 +62,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public boolean deleteMovieById(Long id) {
+        moviePublisher.publishEvent(new DeleteMovieEvent(id, LocalDateTime.now()));
         if (movieRepository.deleteById(id)) {
             return true;
         }
