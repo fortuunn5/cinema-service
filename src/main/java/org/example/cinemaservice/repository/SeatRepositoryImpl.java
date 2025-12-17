@@ -42,6 +42,13 @@ public class SeatRepositoryImpl implements SeatRepository {
     }
 
     @Override
+    public List<SeatDto> readAllByHallId(Long hallId) {
+        TypedQuery<Seat> query = em.createQuery("SELECT s FROM Seat s WHERE s.hall.id = :hallId", Seat.class);
+        query.setParameter("hallId", hallId);
+        return query.getResultList().stream().map(SeatDto::ofEntity).toList();
+    }
+
+    @Override
     public SeatDto update(Seat upSeat) {
         return SeatDto.ofEntity(em.merge(upSeat));
     }

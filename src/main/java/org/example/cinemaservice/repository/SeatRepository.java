@@ -13,6 +13,8 @@ public interface SeatRepository {
 
     List<SeatDto> readAll();
 
+    List<SeatDto> readAllByHallId(Long hallId);
+
     SeatDto update(Seat upSeat);
 
     boolean deleteById(Long id);

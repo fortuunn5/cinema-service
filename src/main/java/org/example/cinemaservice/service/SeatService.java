@@ -13,6 +13,8 @@ public interface SeatService {
 
     List<SeatDto> getAllSeats();
 
+    List<SeatDto> getAllSeatsByHallId(Long hallId);
+
     SeatDto updateSeat(Seat upSeat);
 
     boolean deleteSeatById(Long id);
