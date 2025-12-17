@@ -17,4 +17,8 @@ public interface SessionService {
     SessionDto updateSession(Session upSession);
 
     boolean deleteSessionById(Long id);
+
+    int deleteAllSessionsByHallId(Long hallId);
+
+    int deleteAllSessionsByMovieId(Long movieId);
 }

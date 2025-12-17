@@ -6,9 +6,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.SessionDto;
 import org.example.cinemaservice.model.Session;
+import org.example.cinemaservice.observer.event.session.DeleteSessionEvent;
+import org.example.cinemaservice.observer.publisher.SessionPublisher;
 import org.example.cinemaservice.repository.SessionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import java.util.List;
 @Transactional
 public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
+    private final SessionPublisher sessionPublisher;
 
     @Override
     public SessionDto createSession(Session newSession) {
@@ -56,10 +60,21 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public boolean deleteSessionById(Long id) {
+        sessionPublisher.publishEvent(new DeleteSessionEvent(id, LocalDateTime.now()));
         if (sessionRepository.deleteById(id)) {
             return true;
         }
         throw new IllegalArgumentException("Session not found");
+    }
+
+    @Override
+    public int deleteAllSessionsByHallId(Long hallId) {
+        return sessionRepository.deleteAllByHallId(hallId);
+    }
+
+    @Override
+    public int deleteAllSessionsByMovieId(Long movieId) {
+        return sessionRepository.deleteAllByMovieId(movieId);
     }
 
     private boolean hasConflictedTime(Session session) {

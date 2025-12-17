@@ -87,6 +87,20 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
+    public int deleteAllByHallId(Long hallId) {
+        Query query = em.createQuery("DELETE FROM Session s WHERE s.hall.id = :hallId");
+        query.setParameter("hallId", hallId);
+        return query.executeUpdate();
+    }
+
+    @Override
+    public int deleteAllByMovieId(Long movieId) {
+        Query query = em.createQuery("DELETE FROM Session s WHERE s.movie.id = :movieId");
+        query.setParameter("movieId", movieId);
+        return query.executeUpdate();
+    }
+
+    @Override
     public boolean hasConflictedTime(Long hallId, Date startDate, Date endDate) {
         String queryString = """
                 SELECT EXISTS(
