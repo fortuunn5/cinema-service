@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.HallDto;
 import org.example.cinemaservice.model.Hall;
-import org.example.cinemaservice.observer.DeleteHallEvent;
-import org.example.cinemaservice.observer.HallPublisher;
+import org.example.cinemaservice.observer.event.hall.DeleteHallEvent;
+import org.example.cinemaservice.observer.event.hall.SaveHallEvent;
+import org.example.cinemaservice.observer.publisher.HallPublisher;
 import org.example.cinemaservice.repository.HallRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class HallServiceImpl implements HallService {
         if (newHall.getId() != null) {
             throw new IllegalArgumentException("Hall id already exists");
         }
+        hallPublisher.publishEvent(new SaveHallEvent(newHall, LocalDateTime.now()));
         return hallRepository.save(newHall);
     }
 
@@ -43,9 +45,11 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public HallDto updateHall(Hall upHall) {
-        if (upHall.getId() == null || hallRepository.readById(upHall.getId()) == null) {
-            throw new IllegalArgumentException("Hall not found");
-        }
+        //todo check
+//        if (upHall.getId() == null || hallRepository.readById(upHall.getId()) == null) {
+//            throw new IllegalArgumentException("Hall not found");
+//        }
+        hallPublisher.publishEvent(new SaveHallEvent(upHall, LocalDateTime.now()));
         return hallRepository.update(upHall);
     }
 

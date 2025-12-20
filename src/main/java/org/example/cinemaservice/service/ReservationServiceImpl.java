@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
 import org.example.cinemaservice.model.Reservation;
 import org.example.cinemaservice.model.Session;
+import org.example.cinemaservice.observer.event.reservation.SaveReservationEvent;
+import org.example.cinemaservice.observer.publisher.ReservationPublisher;
 import org.example.cinemaservice.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,16 +19,14 @@ import java.util.List;
 public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final SessionService sessionService;
+    private final ReservationPublisher reservationPublisher;
 
     @Override
     public ReservationDto createReservation(Reservation newReservation) {
         if (newReservation.getId() != null) {
             throw new IllegalArgumentException("Reservation id already exists");
         }
-        //todo: проверить
-        if (newReservation.getSeatsCount() < 1 || newReservation.getSeatsCount() > 5) {
-            throw new IllegalArgumentException("Seats count must be between 1 and 5");
-        }
+        reservationPublisher.publishEvent(new SaveReservationEvent(newReservation, LocalDateTime.now()));
         return reservationRepository.save(newReservation);
     }
 
@@ -37,9 +38,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation r = newReservation.toEntity();
         Session s = sessionService.getSessionById(r.getSession().getId()).toEntity();
         r.setSession(s);
-        if (r.getSeatsCount() < 1 || r.getSeatsCount() > 5) {
-            throw new IllegalArgumentException("Seats count must be between 1 and 5");
-        }
+        reservationPublisher.publishEvent(new SaveReservationEvent(r, LocalDateTime.now()));
         return reservationRepository.save(r);
     }
 
@@ -78,9 +77,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDto updateReservation(Reservation upReservation) {
-        if (upReservation.getId() == null || reservationRepository.readById(upReservation.getId()) == null) {
-            throw new IllegalArgumentException("Reservation not found");
-        }
+//        todo check
+//        if (upReservation.getId() == null || reservationRepository.readById(upReservation.getId()) == null) {
+//            throw new IllegalArgumentException("Reservation not found");
+//        }
+        reservationPublisher.publishEvent(new SaveReservationEvent(upReservation, LocalDateTime.now()));
         return reservationRepository.update(upReservation);
     }
 

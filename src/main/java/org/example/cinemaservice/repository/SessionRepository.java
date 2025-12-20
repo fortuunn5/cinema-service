@@ -22,5 +22,5 @@ public interface SessionRepository {
 
     int deleteAllByMovieId(Long movieId);
 
-    boolean hasConflictedTime(Long hallId, Date startDate, Date endDate);
+    boolean hasConflictedTime(Long hallId, Date startDate, Date endDate, Long sessionId);
 }

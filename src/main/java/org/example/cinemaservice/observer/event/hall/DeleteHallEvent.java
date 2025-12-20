@@ -1,6 +1,7 @@
-package org.example.cinemaservice.observer;
+package org.example.cinemaservice.observer.event.hall;
 
 import lombok.Getter;
+import org.example.cinemaservice.observer.event.Stage;
 
 import java.time.LocalDateTime;
 

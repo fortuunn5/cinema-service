@@ -101,21 +101,28 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public boolean hasConflictedTime(Long hallId, Date startDate, Date endDate) {
+    public boolean hasConflictedTime(Long hallId, Date startDate, Date endDate, Long sessionId) {
         String queryString = """
                 SELECT EXISTS(
                         SELECT 1
                         FROM Session s
                         WHERE s.hall.id=:hallId
                         AND NOT(
-                            (:startDate<=s.startDate AND :endDate<=s.startDate)
-                            OR (:startDate>=s.endDate AND :endDate>=s.endDate)
-                            ))
+                            (:startDate<s.startDate AND :endDate<s.startDate)
+                            OR (:startDate>s.endDate AND :endDate>s.endDate)
+                            )
                 """;
+        if (sessionId != null) {
+            queryString += " AND s.session.id = :sessionId ";
+        }
+        queryString += ")";
         TypedQuery<Boolean> query = em.createQuery(queryString, Boolean.class);
         query.setParameter("hallId", hallId);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
+        if (sessionId != null) {
+            query.setParameter("sessionId", sessionId);
+        }
         return query.getSingleResult();
     }
 }

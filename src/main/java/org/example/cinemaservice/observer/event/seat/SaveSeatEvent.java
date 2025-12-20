@@ -6,10 +6,10 @@ import org.example.cinemaservice.observer.event.Stage;
 import java.time.LocalDateTime;
 
 @Getter
-public class CreateSeatEvent extends SeatEvent {
+public class SaveSeatEvent extends SeatEvent {
     private final Long hallId;
 
-    public CreateSeatEvent(Long seatId, LocalDateTime date, Long hallId) {
+    public SaveSeatEvent(Long seatId, LocalDateTime date, Long hallId) {
         super(seatId, date, Stage.SAVE);
         this.hallId = hallId;
     }

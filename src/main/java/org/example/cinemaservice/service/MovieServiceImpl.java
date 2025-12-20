@@ -54,9 +54,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDto updateMovie(Movie upMovie) {
-        if (upMovie.getId() == null || movieRepository.readById(upMovie.getId()) == null) {
-            throw new IllegalArgumentException("Movie not found");
-        }
+        //todo check
+//        if (upMovie.getId() == null || movieRepository.readById(upMovie.getId()) == null) {
+//            throw new IllegalArgumentException("Movie not found");
+//        }
         return movieRepository.update(upMovie);
     }
 

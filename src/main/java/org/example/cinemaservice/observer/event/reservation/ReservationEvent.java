@@ -1,16 +1,15 @@
-package org.example.cinemaservice.observer;
+package org.example.cinemaservice.observer.event.reservation;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.cinemaservice.observer.event.Stage;
 
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
-public class HallEvent {
-    private final Long hallId;
+public class ReservationEvent {
+    private final Long reservationId;
     private final LocalDateTime date;
     private final Stage stage;
-
-
 }

@@ -1,11 +1,12 @@
-package org.example.cinemaservice.observer;
+package org.example.cinemaservice.observer.publisher;
 
+import org.example.cinemaservice.observer.event.reservation.ReservationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HallPublisher implements ApplicationEventPublisherAware {
+public class ReservationPublisher implements ApplicationEventPublisherAware {
     private ApplicationEventPublisher publisher;
 
     @Override
@@ -13,7 +14,7 @@ public class HallPublisher implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
-    public void publishEvent(HallEvent hallEvent) {
-        publisher.publishEvent(hallEvent);
+    public void publishEvent(ReservationEvent reservationEvent) {
+        publisher.publishEvent(reservationEvent);
     }
 }

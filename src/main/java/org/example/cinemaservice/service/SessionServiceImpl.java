@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.SessionDto;
 import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.observer.event.session.DeleteSessionEvent;
+import org.example.cinemaservice.observer.event.session.SaveSessionEvent;
 import org.example.cinemaservice.observer.publisher.SessionPublisher;
 import org.example.cinemaservice.repository.SessionRepository;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,11 @@ public class SessionServiceImpl implements SessionService {
         if (newSession.getId() != null) {
             throw new IllegalArgumentException("Session id already exists");
         }
+        sessionPublisher.publishEvent(new SaveSessionEvent(newSession, LocalDateTime.now()));
         if (hasConflictedTime(newSession)) {
             throw new IllegalArgumentException("Session has conflicted time");
         }
+        //todo: try catch
         return sessionRepository.save(newSession);
     }
 
@@ -55,6 +58,7 @@ public class SessionServiceImpl implements SessionService {
         if (hasConflictedTime(upSession)) {
             throw new IllegalArgumentException("Session has conflicted time");
         }
+        sessionPublisher.publishEvent(new SaveSessionEvent(upSession, LocalDateTime.now()));
         return sessionRepository.update(upSession);
     }
 
@@ -69,15 +73,19 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public int deleteAllSessionsByHallId(Long hallId) {
-        return sessionRepository.deleteAllByHallId(hallId);
+        List<SessionDto> sessionsByHall = getSessions(null, null, hallId);
+        sessionsByHall.forEach(x -> deleteSessionById(x.getId()));
+        return sessionsByHall.size();
     }
 
     @Override
     public int deleteAllSessionsByMovieId(Long movieId) {
-        return sessionRepository.deleteAllByMovieId(movieId);
+        List<SessionDto> sessionsByMovie = getSessions(movieId, null, null);
+        sessionsByMovie.forEach(x -> deleteSessionById(x.getId()));
+        return sessionsByMovie.size();
     }
 
     private boolean hasConflictedTime(Session session) {
-        return sessionRepository.hasConflictedTime(session.getHall().getId(), session.getStartDate(), session.getEndDate());
+        return sessionRepository.hasConflictedTime(session.getHall().getId(), session.getStartDate(), session.getEndDate(), session.getId());
     }
 }

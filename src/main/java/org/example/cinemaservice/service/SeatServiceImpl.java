@@ -6,9 +6,8 @@ import org.example.cinemaservice.dto.HallDto;
 import org.example.cinemaservice.dto.SeatDto;
 import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.model.Seat;
-import org.example.cinemaservice.observer.event.seat.CreateSeatEvent;
 import org.example.cinemaservice.observer.event.seat.DeleteSeatEvent;
-import org.example.cinemaservice.observer.event.seat.UpdateSeatEvent;
+import org.example.cinemaservice.observer.event.seat.SaveSeatEvent;
 import org.example.cinemaservice.observer.publisher.SeatPublisher;
 import org.example.cinemaservice.repository.SeatRepository;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class SeatServiceImpl implements SeatService {
         }
         HallDto hall = hallService.getHallById(newSeat.getHall().getId());
         //todo: проверить
-        seatPublisher.publishEvent(new CreateSeatEvent(newSeat.getHall().getId(), LocalDateTime.now(), hall.getId()));
+        seatPublisher.publishEvent(new SaveSeatEvent(newSeat.getId(), LocalDateTime.now(), hall.getId()));
         return seatRepository.save(newSeat);
     }
 
@@ -56,10 +55,11 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public SeatDto updateSeat(Seat upSeat) {
-        if (upSeat.getId() == null || seatRepository.readById(upSeat.getId()) == null) {
-            throw new IllegalArgumentException("Seat not found");
-        }
-        seatPublisher.publishEvent(new UpdateSeatEvent(upSeat.getId(), LocalDateTime.now(), upSeat.getHall().getId()));
+        //todo check
+//        if (upSeat.getId() == null || seatRepository.readById(upSeat.getId()) == null) {
+//            throw new IllegalArgumentException("Seat not found");
+//        }
+        seatPublisher.publishEvent(new SaveSeatEvent(upSeat.getId(), LocalDateTime.now(), upSeat.getHall().getId()));
         return seatRepository.update(upSeat);
     }
 
@@ -74,7 +74,9 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public int deleteAllSeatsByHallId(Long hallId) {
-        return seatRepository.deleteAllByHallId(hallId);
+        List<SeatDto> seatsByHall = getAllSeatsByHallId(hallId);
+        seatsByHall.forEach(x -> deleteSeatById(x.getId()));
+        return seatsByHall.size();
     }
 
     @Override
