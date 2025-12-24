@@ -23,6 +23,6 @@ public class ReservationSeat {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("seatId")
-    @JoinColumn(name = "seats_id")
+    @JoinColumn(name = "seat_id")
     Seat seat;
 }

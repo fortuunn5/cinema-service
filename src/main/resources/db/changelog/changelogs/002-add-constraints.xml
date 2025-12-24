@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="1" author="fortuunn5">
+        <sql>
+            alter table hall
+                alter column name set not null,
+                add constraint name_not_empty check (name != '');
+        </sql>
+    </changeSet>
+    <changeSet id="2" author="fortuunn5">
+        <sql>
+            alter table movie
+                alter column name set not null,
+                add constraint description_not_empty check (description != ''),
+                add constraint min_duration check (duration >= 5),
+                add constraint name_not_empty check (name != '');
+        </sql>
+    </changeSet>
+    <changeSet id="3" author="fortuunn5">
+        <sql>
+            alter table session
+                add constraint min_duration check (duration >= 5);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
