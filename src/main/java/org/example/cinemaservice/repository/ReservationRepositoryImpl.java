@@ -85,4 +85,12 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         query.setParameter("ids", ids);
         return query.executeUpdate();
     }
+
+    @Override
+    public boolean oneOfSeatsIsReserved(Long sessionId, List<Long> seatsId) {
+        TypedQuery<Boolean> query = em.createQuery("SELECT EXISTS(SELECT 1 FROM Reservation r JOIN ReservationSeat rs ON r.id = rs.reservation.id WHERE r.session.id=:sessionId AND rs.seat.id IN (:seatsId))", Boolean.class);
+        query.setParameter("sessionId", sessionId);
+        query.setParameter("seatsId", seatsId);
+        return query.getSingleResult();
+    }
 }

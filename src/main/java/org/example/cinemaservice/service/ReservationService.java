@@ -27,4 +27,6 @@ public interface ReservationService {
     boolean deleteReservationById(Long id);
 
     boolean cancelReservationsByIds(List<Long> ids);
+
+    boolean oneOfSeatsIsReserved(Long sessionId, List<Long> seatsId);
 }

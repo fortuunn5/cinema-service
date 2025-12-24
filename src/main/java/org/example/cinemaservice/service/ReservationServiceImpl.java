@@ -101,4 +101,9 @@ public class ReservationServiceImpl implements ReservationService {
         }
         throw new IllegalArgumentException("Not all reservations are cancelled");
     }
+
+    @Override
+    public boolean oneOfSeatsIsReserved(Long sessionId, List<Long> seatsId) {
+        return reservationRepository.oneOfSeatsIsReserved(sessionId, seatsId);
+    }
 }
