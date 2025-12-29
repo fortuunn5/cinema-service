@@ -39,6 +39,14 @@ public class Reservation {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Session session;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Reservation(Long id) {
+        this.id = id;
+    }
+
     public int getSeatsCount() {
         return seats.size();
     }

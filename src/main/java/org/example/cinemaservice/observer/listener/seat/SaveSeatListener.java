@@ -20,7 +20,7 @@ public class SaveSeatListener {
     @EventListener
     @Order(5)
     public void canBeSaved(SaveSeatEvent saveSeatEvent) {
-        List<SeatDto> seatsByHall = seatService.getAllSeatsByHallId(saveSeatEvent.getHallId());
+        List<SeatDto> seatsByHall = seatService.getAllSeats(saveSeatEvent.getHallId());
         int hallCapacity = hallService.getHallById(saveSeatEvent.getHallId()).getCapacity();
         if (seatsByHall.size() >= hallCapacity) {
             throw new IllegalArgumentException("Hall capacity exceeded");

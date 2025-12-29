@@ -1,5 +1,6 @@
 package org.example.cinemaservice.repository;
 
+import jakarta.annotation.Nullable;
 import org.example.cinemaservice.dto.SeatDto;
 import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.model.Seat;
@@ -11,15 +12,11 @@ public interface SeatRepository {
 
     SeatDto readById(Long id);
 
-    List<SeatDto> readAll();
-
-    List<SeatDto> readAllByHallId(Long hallId);
+    List<SeatDto> readAll(@Nullable Long hallId);
 
     SeatDto update(Seat upSeat);
 
     boolean deleteById(Long id);
-
-    int deleteAllByHallId(Long hallId);
 
     List<SeatWithIsReservedDto> readWithIsFreeBySessionId(Long sessionId);
 }

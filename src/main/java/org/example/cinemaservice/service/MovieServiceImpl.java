@@ -1,7 +1,6 @@
 package org.example.cinemaservice.service;
 
 import jakarta.annotation.Nullable;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.MovieDto;
 import org.example.cinemaservice.model.Genre;
@@ -10,6 +9,7 @@ import org.example.cinemaservice.observer.event.movie.DeleteMovieEvent;
 import org.example.cinemaservice.observer.publisher.MoviePublisher;
 import org.example.cinemaservice.repository.MovieRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,17 +39,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDto getMovieByName(String name) {
-        MovieDto movie = movieRepository.readByName(name);
-        if (movie == null) {
-            throw new IllegalArgumentException("Movie not found");
-        }
-        return movie;
-    }
-
-    @Override
-    public List<MovieDto> getMovies(@Nullable List<Genre> genres) {
-        return movieRepository.readAll(genres);
+    public List<MovieDto> getMovies(@Nullable List<Genre> genres, @Nullable String name) {
+        return movieRepository.readAll(genres, name);
     }
 
     @Override

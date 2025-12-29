@@ -2,7 +2,6 @@ package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.SeatDto;
-import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.service.SeatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +26,8 @@ public class SeatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SeatDto>> getAllSeats() {
-        return new ResponseEntity<>(seatService.getAllSeats(), HttpStatus.OK);
+    public ResponseEntity<List<SeatDto>> getAllSeats(@RequestParam(name = "hallId", required = false) Long hallId) {
+        return new ResponseEntity<>(seatService.getAllSeats(hallId), HttpStatus.OK);
     }
 
     @PutMapping

@@ -1,6 +1,8 @@
 package org.example.cinemaservice.repository;
 
+import jakarta.annotation.Nullable;
 import org.example.cinemaservice.dto.ReservationDto;
+import org.example.cinemaservice.dto.UpdateReservationStatusDto;
 import org.example.cinemaservice.model.Reservation;
 
 import java.util.List;
@@ -10,17 +12,15 @@ public interface ReservationRepository {
 
     ReservationDto readById(Long id);
 
-    List<ReservationDto> readAll();
-
-    List<ReservationDto> readAllByHallId(Long hallId);
-
-    List<ReservationDto> readAllBySeatId(Long seatId);
-
-    List<ReservationDto> readAllByMovieId(Long movieId);
-
-    List<ReservationDto> readAllBySessionId(Long sessionId);
+    List<ReservationDto> readAll(@Nullable Long hallId,
+                                 @Nullable Long seatId,
+                                 @Nullable Long movieId,
+                                 @Nullable Long sessionId,
+                                 @Nullable Long userId);
 
     ReservationDto update(Reservation reservation);
+
+    boolean updateStatus(UpdateReservationStatusDto updateReservationStatus);
 
     boolean deleteById(Long id);
 

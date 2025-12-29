@@ -1,5 +1,7 @@
 package org.example.cinemaservice.service;
 
+import jakarta.annotation.Nullable;
+import org.example.cinemaservice.dto.UpdateReservationStatusDto;
 import org.example.cinemaservice.dto.ReservationDto;
 import org.example.cinemaservice.model.Reservation;
 
@@ -12,17 +14,15 @@ public interface ReservationService {
 
     ReservationDto getReservationById(Long id);
 
-    List<ReservationDto> getAllReservations();
-
-    List<ReservationDto> getAllReservationsByHallId(Long hallId);
-
-    List<ReservationDto> getAllReservationsBySeatId(Long seatId);
-
-    List<ReservationDto> getAllReservationsByMovieId(Long movieId);
-
-    List<ReservationDto> getAllReservationsBySessionId(Long sessionId);
+    List<ReservationDto> getAllReservations(@Nullable Long hallId,
+                                            @Nullable Long seatId,
+                                            @Nullable Long movieId,
+                                            @Nullable Long sessionId,
+                                            @Nullable Long userId);
 
     ReservationDto updateReservation(Reservation upReservation);
+
+    boolean updateReservationStatus(UpdateReservationStatusDto changeReservationStatus);
 
     boolean deleteReservationById(Long id);
 

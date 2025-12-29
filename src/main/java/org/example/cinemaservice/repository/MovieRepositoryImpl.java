@@ -7,12 +7,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.example.cinemaservice.dto.MovieDto;
 import org.example.cinemaservice.model.Genre;
 import org.example.cinemaservice.model.Movie;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -33,18 +33,15 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public MovieDto readByName(String name) {
-        TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.name = :name", Movie.class);
-        query.setParameter("name", name);
-        return MovieDto.ofEntity(query.getSingleResult());
-    }
-
-    @Override
-    public List<MovieDto> readAll(@Nullable List<Genre> genres) {
+    public List<MovieDto> readAll(@Nullable List<Genre> genres, @Nullable String name) {
         String readAll = "SELECT m FROM Movie m WHERE 1=1";
 
         if (genres != null && genres.isEmpty()) {
-            readAll += "AND WHERE (SELECT COUNT(DISTINCT g) FROM Movie m2 JOIN m2.genres g WHERE m2=m AND g IN :genres) = :countGenres";
+            readAll += " AND WHERE (SELECT COUNT(DISTINCT g) FROM Movie m2 JOIN m2.genres g WHERE m2=m AND g IN :genres) = :countGenres";
+        }
+
+        if (StringUtils.isNotEmpty(name)) {
+            readAll += " AND LOWER(m.name) LIKE :name";
         }
 
         TypedQuery<Movie> query = em.createQuery(readAll, Movie.class);
@@ -53,12 +50,14 @@ public class MovieRepositoryImpl implements MovieRepository {
             query.setParameter("genres", genres);
             query.setParameter("countGenres", genres.size());
         }
-        List<MovieDto> movieDtoList = new ArrayList<>();
-        List<Movie> movieList = query.getResultList();
-        for (Movie movie : movieList) {
-            movieDtoList.add(MovieDto.ofEntity(movie));
+
+        if (StringUtils.isNotEmpty(name)) {
+            query.setParameter("name", name);
         }
-        return movieDtoList;
+
+        return query.getResultList().stream()
+                .map(MovieDto::ofEntity)
+                .toList();
     }
 
     @Override

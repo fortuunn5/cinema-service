@@ -12,9 +12,7 @@ public interface MovieRepository {
 
     MovieDto readById(Long id);
 
-    MovieDto readByName(String name);
-
-    List<MovieDto> readAll(@Nullable List<Genre> genres);
+    List<MovieDto> readAll(@Nullable List<Genre> genres, @Nullable String name);
 
     MovieDto update(Movie upMovie);
 

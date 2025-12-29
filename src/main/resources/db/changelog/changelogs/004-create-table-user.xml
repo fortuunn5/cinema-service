@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="1" author="fortuunn5">
+        <sql>
+            create table user_table
+            (
+                user_id       bigserial primary key,
+                contact_email varchar(255) not null unique,
+                password      varchar(255) not null,
+                check (length(password) >= 6),
+                role_id       bigint       not null references role
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2" author="fortuunn5">
+        <sql>
+            alter table reservation
+                add column user_id bigint not null references user_table;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

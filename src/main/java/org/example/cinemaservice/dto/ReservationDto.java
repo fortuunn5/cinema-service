@@ -8,6 +8,7 @@ import org.example.cinemaservice.model.Reservation;
 import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.model.Status;
+import org.example.cinemaservice.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class ReservationDto {
     private int price;
     private List<Long> seatsId;
     private Long sessionId;
+    private Long userId;
 
     public Reservation toEntity() {
         Reservation reservation = new Reservation();
@@ -33,11 +35,15 @@ public class ReservationDto {
         List<Seat> seats = new ArrayList<>();
         if (seatsId != null) {
             for (Long id : seatsId) {
-                seats.add(new Seat(id));
+                Seat seat = new Seat(id);
+                seats.add(seat);
             }
         }
         reservation.setSeats(seats);
-        reservation.setSession(new Session(sessionId));
+        Session session = new Session(sessionId);
+        reservation.setSession(session);
+        User user = new User(userId);
+        reservation.setUser(user);
         return reservation;
     }
 
@@ -54,6 +60,7 @@ public class ReservationDto {
             }
             reservationDto.setSeatsId(seatsId);
             reservationDto.setSessionId(reservation.getSession().getId());
+            reservationDto.setUserId(reservation.getUser().getId());
             return reservationDto;
         }
         return null;

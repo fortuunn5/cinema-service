@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.example.cinemaservice.dto.SessionDto;
 import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.model.Session;
+import org.example.cinemaservice.model.Status;
 import org.example.cinemaservice.observer.event.reservation.SaveReservationEvent;
 import org.example.cinemaservice.service.ReservationService;
 import org.example.cinemaservice.service.SessionService;
@@ -47,6 +48,14 @@ public class SaveReservationListener {
                 .toList();
         if (reservationService.oneOfSeatsIsReserved(sessionId, seatsId)) {
             throw new IllegalArgumentException("One of these seats reserved");
+        }
+    }
+
+    @EventListener
+    @Order(7)
+    public void modifyReservation(SaveReservationEvent saveReservationEvent) {
+        if (saveReservationEvent.getReservationId() == null) {
+            saveReservationEvent.getReservation().setStatus(Status.RESERVED);
         }
     }
 }

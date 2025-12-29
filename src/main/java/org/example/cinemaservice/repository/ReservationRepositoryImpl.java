@@ -1,22 +1,23 @@
 package org.example.cinemaservice.repository;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
+import org.example.cinemaservice.dto.UpdateReservationStatusDto;
 import org.example.cinemaservice.model.Reservation;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class ReservationRepositoryImpl implements ReservationRepository {
-   @PersistenceContext
-   private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public ReservationDto save(Reservation newReservation) {
@@ -30,46 +31,62 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public List<ReservationDto> readAll() {
-        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r", Reservation.class);
-        List<ReservationDto> reservationDtoList = new ArrayList<>();
-        for (Reservation reservation : query.getResultList()) {
-            reservationDtoList.add(ReservationDto.ofEntity(reservation));
+    public List<ReservationDto> readAll(@Nullable Long hallId,
+                                        @Nullable Long seatId,
+                                        @Nullable Long movieId,
+                                        @Nullable Long sessionId,
+                                        @Nullable Long userId) {
+        String readAll = "SELECT r FROM Reservation r WHERE 1=1";
+        if (hallId != null) {
+            readAll += " AND r.session.hall.id = :hallId";
         }
-        return reservationDtoList;
-    }
+        if (seatId != null) {
+            readAll += " AND r.id IN (SELECT rs.reservation.id FROM ReservationSeat rs WHERE rs.seat.id = :seatId)";
+        }
+        if (movieId != null) {
+            readAll += " AND r.session.movie.id = :movieId";
+        }
+        if (sessionId != null) {
+            readAll += " AND r.session.id = :sessionId";
+        }
+        if (userId != null) {
+            readAll += " AND r.user.id = :userId";
+        }
 
-    @Override
-    public List<ReservationDto> readAllByHallId(Long hallId) {
-        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.hall.id = :hallId", Reservation.class);
-        query.setParameter("hallId", hallId);
-        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
-    }
+        TypedQuery<Reservation> query = em.createQuery(readAll, Reservation.class);
 
-    @Override
-    public List<ReservationDto> readAllBySeatId(Long seatId) {
-        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.id IN (SELECT rs.reservation.id FROM ReservationSeat rs WHERE rs.seat.id = :seatId)", Reservation.class);
-        query.setParameter("seatId", seatId);
-        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
-    }
+        if (hallId != null) {
+            query.setParameter("hallId", hallId);
+        }
+        if (seatId != null) {
+            query.setParameter("seatId", seatId);
+        }
+        if (movieId != null) {
+            query.setParameter("movieId", movieId);
+        }
+        if (sessionId != null) {
+            query.setParameter("sessionId", sessionId);
+        }
+        if (userId != null) {
+            query.setParameter("userId", userId);
+        }
 
-    @Override
-    public List<ReservationDto> readAllByMovieId(Long movieId) {
-        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.movie.id = :movieId", Reservation.class);
-        query.setParameter("movieId", movieId);
-        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
-    }
-
-    @Override
-    public List<ReservationDto> readAllBySessionId(Long sessionId) {
-        TypedQuery<Reservation> query = em.createQuery("SELECT r FROM Reservation r WHERE r.session.id = :sessionId", Reservation.class);
-        query.setParameter("sessionId", sessionId);
-        return query.getResultList().stream().map(ReservationDto::ofEntity).toList();
+        return query.getResultList().stream()
+                .map(ReservationDto::ofEntity)
+                .toList();
     }
 
     @Override
     public ReservationDto update(Reservation newReservation) {
         return ReservationDto.ofEntity(em.merge(newReservation));
+    }
+
+    @Override
+    public boolean updateStatus(UpdateReservationStatusDto updateReservationStatus) {
+        Query query = em.createQuery("UPDATE Reservation r SET r.status = :status WHERE r.id = :id");
+        query.setParameter("status", updateReservationStatus.getStatus());
+        query.setParameter("id", updateReservationStatus.getReservationId());
+        return query.executeUpdate() > 0;
     }
 
     @Override

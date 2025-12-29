@@ -22,7 +22,12 @@ public class DeleteMovieListener {
     @Order(5)
     public void checkReservations(DeleteMovieEvent deleteMovieEvent) {
         validate(deleteMovieEvent);
-        List<ReservationDto> reservationsByMovie = reservationService.getAllReservationsByMovieId(deleteMovieEvent.getMovieId());
+        List<ReservationDto> reservationsByMovie = reservationService.getAllReservations(
+                null,
+                null,
+                deleteMovieEvent.getMovieId(),
+                null,
+                null);
         if (CollectionUtils.isNotEmpty(reservationsByMovie)) {
             throw new IllegalArgumentException("Movie has reservations");
         }

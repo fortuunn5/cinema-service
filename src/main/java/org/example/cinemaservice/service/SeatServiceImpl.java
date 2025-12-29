@@ -1,5 +1,6 @@
 package org.example.cinemaservice.service;
 
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.HallDto;
@@ -44,13 +45,8 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<SeatDto> getAllSeats() {
-        return seatRepository.readAll();
-    }
-
-    @Override
-    public List<SeatDto> getAllSeatsByHallId(Long hallId) {
-        return seatRepository.readAllByHallId(hallId);
+    public List<SeatDto> getAllSeats(@Nullable Long hallId) {
+        return seatRepository.readAll(hallId);
     }
 
     @Override
@@ -74,7 +70,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public int deleteAllSeatsByHallId(Long hallId) {
-        List<SeatDto> seatsByHall = getAllSeatsByHallId(hallId);
+        List<SeatDto> seatsByHall = getAllSeats(hallId);
         seatsByHall.forEach(x -> deleteSeatById(x.getId()));
         return seatsByHall.size();
     }

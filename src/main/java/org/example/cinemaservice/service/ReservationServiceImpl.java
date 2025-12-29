@@ -1,18 +1,22 @@
 package org.example.cinemaservice.service;
 
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
+import org.example.cinemaservice.dto.UpdateReservationStatusDto;
+import org.example.cinemaservice.dto.UserDto;
 import org.example.cinemaservice.model.Reservation;
 import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.observer.event.reservation.SaveReservationEvent;
 import org.example.cinemaservice.observer.publisher.ReservationPublisher;
 import org.example.cinemaservice.repository.ReservationRepository;
+import org.example.cinemaservice.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+//todo: переделать
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,18 +24,27 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final SessionService sessionService;
     private final ReservationPublisher reservationPublisher;
+    private final RoleService roleService;
+    private final UserService userService;
 
     @Override
     public ReservationDto createReservation(Reservation newReservation) {
+        if (SecurityUtils.getCurrentRole(userService, roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(userService).equals(newReservation.getUser().getId())) {
+            throw new IllegalArgumentException("Not enough rights");
+        }
         if (newReservation.getId() != null) {
             throw new IllegalArgumentException("Reservation id already exists");
         }
         reservationPublisher.publishEvent(new SaveReservationEvent(newReservation, LocalDateTime.now()));
+
         return reservationRepository.save(newReservation);
     }
 
     @Override
     public ReservationDto createReservation(ReservationDto newReservation) {
+        if (SecurityUtils.getCurrentRole(userService, roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(userService).equals(newReservation.getUserId())) {
+            throw new IllegalArgumentException("Not enough rights");
+        }
         if (newReservation.getId() != null) {
             throw new IllegalArgumentException("Reservation id already exists");
         }
@@ -45,34 +58,26 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDto getReservationById(Long id) {
         ReservationDto reservation = reservationRepository.readById(id);
-        if (reservation == null) {
-            throw new IllegalArgumentException("Reservation not found");
+        if (reservation != null) {
+            if (SecurityUtils.getCurrentRole(userService, roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(userService).equals(reservation.getUserId())) {
+                throw new IllegalArgumentException("Not enough rights");
+            }
+            return reservation;
         }
-        return reservation;
+        throw new IllegalArgumentException("Reservation not found");
     }
 
     @Override
-    public List<ReservationDto> getAllReservations() {
-        return reservationRepository.readAll();
-    }
-
-    @Override
-    public List<ReservationDto> getAllReservationsByHallId(Long hallId) {
-        return reservationRepository.readAllByHallId(hallId);
-    }
-
-    public List<ReservationDto> getAllReservationsBySeatId(Long seatId) {
-        return reservationRepository.readAllBySeatId(seatId);
-    }
-
-    @Override
-    public List<ReservationDto> getAllReservationsByMovieId(Long movieId) {
-        return reservationRepository.readAllByMovieId(movieId);
-    }
-
-    @Override
-    public List<ReservationDto> getAllReservationsBySessionId(Long sessionId) {
-        return reservationRepository.readAllBySessionId(sessionId);
+    public List<ReservationDto> getAllReservations(@Nullable Long hallId,
+                                                   @Nullable Long seatId,
+                                                   @Nullable Long movieId,
+                                                   @Nullable Long sessionId,
+                                                   @Nullable Long userId) {
+        if (userId != null && SecurityUtils.hasRole("ROLE_ADMIN")) {
+            return reservationRepository.readAll(hallId, seatId, movieId, sessionId, userId);
+        }
+        UserDto user = userService.getUserByEmail(SecurityUtils.getCurrentUserEmail());
+        return reservationRepository.readAll(hallId, seatId, movieId, sessionId, user.getId());
     }
 
     @Override
@@ -83,6 +88,17 @@ public class ReservationServiceImpl implements ReservationService {
 //        }
         reservationPublisher.publishEvent(new SaveReservationEvent(upReservation, LocalDateTime.now()));
         return reservationRepository.update(upReservation);
+    }
+
+    @Override
+    public boolean updateReservationStatus(UpdateReservationStatusDto updateReservationStatusDto) {
+        if (SecurityUtils.getCurrentRole(userService, this.roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(userService).equals(updateReservationStatusDto.getUserId())) {
+            throw new IllegalArgumentException("Not enough rights");
+        }
+        if (reservationRepository.updateStatus(updateReservationStatusDto)) {
+            return true;
+        }
+        throw new IllegalArgumentException("Reservation not found");
     }
 
     @Override
