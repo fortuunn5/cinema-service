@@ -19,7 +19,6 @@ import java.util.List;
 @Setter
 public class ReservationDto {
     private Long id;
-    private String contactEmail;
     private Status status;
     private int price;
     private List<Long> seatsId;
@@ -29,7 +28,6 @@ public class ReservationDto {
     public Reservation toEntity() {
         Reservation reservation = new Reservation();
         reservation.setId(id);
-        reservation.setContactEmail(contactEmail);
         reservation.setStatus(status);
         reservation.setPrice(price);
         List<Seat> seats = new ArrayList<>();
@@ -51,7 +49,6 @@ public class ReservationDto {
         if (reservation != null) {
             ReservationDto reservationDto = new ReservationDto();
             reservationDto.setId(reservation.getId());
-            reservationDto.setContactEmail(reservation.getContactEmail());
             reservationDto.setStatus(reservation.getStatus());
             reservationDto.setPrice(reservation.getPrice());
             List<Long> seatsId = new ArrayList<>();

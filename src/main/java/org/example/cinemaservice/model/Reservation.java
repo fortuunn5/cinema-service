@@ -1,7 +1,6 @@
 package org.example.cinemaservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,10 +18,6 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    @Email(message = "Email not correct")
-    private String contactEmail;
 
     @Enumerated(EnumType.STRING)
     private Status status;
