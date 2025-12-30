@@ -27,8 +27,11 @@ public class Reservation {
     private int price;
 
     @ManyToMany
-    @JoinTable(name = "reservation_seat")
-    @Column(nullable = false)
+    @JoinTable(
+            name = "reservation_seat",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "seat_id")
+    )
     private List<Seat> seats;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
