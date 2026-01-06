@@ -23,7 +23,7 @@ public class Session {
     private Date startDate;
 
     @Column(nullable = false)
-    private int duration;
+    private Integer duration;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class Session {
 
     @Column(nullable = false)
     @Min(0)
-    private int price;
+    private Integer price;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Hall hall;

@@ -29,7 +29,7 @@ public class Movie {
 
     //todo: сделать фильтрацию по длительности
     @Column(nullable = false)
-    private int duration;
+    private Integer duration;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;

@@ -24,7 +24,7 @@ public class Hall {
 
     @Column(nullable = false)
     @Min(2)
-    private int capacity;
+    private Integer capacity;
 
     @OneToMany(mappedBy = "hall", fetch = FetchType.LAZY)
     private List<Seat> seats;

@@ -20,7 +20,7 @@ import java.util.List;
 public class ReservationDto {
     private Long id;
     private Status status;
-    private int price;
+    private Integer price;
     private List<Long> seatsId;
     private Long sessionId;
     private Long userId;

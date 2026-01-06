@@ -19,7 +19,7 @@ public class MovieDto {
     private Long id;
     private String name;
     private List<Genre> genres;
-    private int duration;
+    private Integer duration;
     private String description;
     private List<Long> sessionsId;
 

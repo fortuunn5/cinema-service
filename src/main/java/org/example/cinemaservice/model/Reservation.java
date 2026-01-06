@@ -24,7 +24,7 @@ public class Reservation {
 
     @Column(nullable = false)
     @Min(0)
-    private int price;
+    private Integer price;
 
     @ManyToMany
     @JoinTable(

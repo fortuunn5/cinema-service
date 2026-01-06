@@ -20,9 +20,9 @@ public class SessionDto {
     private Long id;
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date startDate;
-    private int duration;
+    private Integer duration;
     private DisplayFormat displayFormat;
-    private int price;
+    private Integer price;
     private Long hallId;
     private Long movieId;
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
