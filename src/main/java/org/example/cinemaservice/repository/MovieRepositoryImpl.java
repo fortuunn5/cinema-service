@@ -41,7 +41,7 @@ public class MovieRepositoryImpl implements MovieRepository {
         }
 
         if (StringUtils.isNotEmpty(name)) {
-            readAll += " AND LOWER(m.name) LIKE :name";
+            readAll += " AND LOWER(m.name) LIKE LOWER(:name)";
         }
 
         TypedQuery<Movie> query = em.createQuery(readAll, Movie.class);
