@@ -18,14 +18,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                                .requestMatchers("/register").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/movies/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/sessions/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/reservations/**").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/reservations/changeStatus").authenticated()
-                                .requestMatchers(HttpMethod.GET, "/users/{userId}").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/users/{userId}").authenticated()
-                                .anyRequest().hasRole("ADMIN")
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/movies/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/sessions/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/reservations/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/reservations/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/reservations/changeStatus").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/users/{userId}").authenticated()
+                        .anyRequest().hasRole("ADMIN")
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
