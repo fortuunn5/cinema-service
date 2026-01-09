@@ -48,8 +48,10 @@ public class UserDto {
             userDto.setPassword(user.getPassword());
             userDto.setRoleId(user.getRole().getId());
             List<Long> reservationsId = new ArrayList<>();
-            for (Reservation reservation : user.getReservations()) {
-                reservationsId.add(reservation.getId());
+            if (user.getReservations() != null) {
+                for (Reservation reservation : user.getReservations()) {
+                    reservationsId.add(reservation.getId());
+                }
             }
             userDto.setReservationsId(reservationsId);
             return userDto;
