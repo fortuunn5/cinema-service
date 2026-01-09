@@ -7,6 +7,7 @@ import org.example.cinemaservice.dto.UserDto;
 import org.example.cinemaservice.repository.UserRepository;
 import org.example.cinemaservice.utils.SecurityUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto createUser(UserDto newUser) {
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
         }
         try {
             newUser.setRoleId(roleService.getRoleByName("ROLE_USER").getId());
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             return userRepository.save(newUser.toEntity());
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -76,7 +79,7 @@ public class UserServiceImpl implements UserService {
             userDto.setContactEmail(upUser.getContactEmail());
         }
         if (upUser.getPassword() != null) {
-            userDto.setPassword(upUser.getPassword());
+            userDto.setPassword(passwordEncoder.encode(upUser.getPassword()));
         }
         if (upUser.getRoleId() != null && SecurityUtils.hasRole("ROLE_ADMIN")) {
             userDto.setRoleId(upUser.getRoleId());
