@@ -1,10 +1,6 @@
 package org.example.cinemaservice.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.example.cinemaservice.dto.RoleDto;
-import org.example.cinemaservice.dto.UserDto;
-import org.example.cinemaservice.service.RoleService;
-import org.example.cinemaservice.service.UserService;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,25 +36,5 @@ public class SecurityUtils {
         } else {
             return principal.toString();
         }
-    }
-
-    public static Long getCurrentUserId(UserService userService) {
-        UserDto user = getCurrentUser(userService);
-        if (user != null) {
-            return user.getId();
-        }
-        throw new IllegalArgumentException("User not found");
-    }
-
-    public static UserDto getCurrentUser(UserService userService) {
-        return userService.getUserByContactEmail(getCurrentUserEmail());
-    }
-
-    public static RoleDto getCurrentRole(UserService userService, RoleService roleService) {
-        UserDto user = getCurrentUser(userService);
-        if (user != null) {
-            return roleService.getRoleById(user.getRoleId());
-        }
-        throw new IllegalArgumentException("User not found");
     }
 }
