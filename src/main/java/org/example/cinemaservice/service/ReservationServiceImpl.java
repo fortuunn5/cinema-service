@@ -106,7 +106,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservationRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Reservation not found");
+        throw new IllegalArgumentException("Reservation with id " + id + " not found");
     }
 
     @Override

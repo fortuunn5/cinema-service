@@ -61,6 +61,6 @@ public class HallServiceImpl implements HallService {
         if (hallRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Hall not found");
+        throw new IllegalArgumentException("Hall with id " + id + " not found");
     }
 }

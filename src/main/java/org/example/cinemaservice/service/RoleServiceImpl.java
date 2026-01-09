@@ -60,6 +60,6 @@ public class RoleServiceImpl implements RoleService {
         if (roleRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Role not found");
+        throw new IllegalArgumentException("Role with id " + id + " not found");
     }
 }

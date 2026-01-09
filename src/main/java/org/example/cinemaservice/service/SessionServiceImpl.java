@@ -84,7 +84,7 @@ public class SessionServiceImpl implements SessionService {
         if (sessionRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Session not found");
+        throw new IllegalArgumentException("Session with id " + id + " not found");
     }
 
     @Override

@@ -65,6 +65,6 @@ public class MovieServiceImpl implements MovieService {
         if (movieRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Movie not found");
+        throw new IllegalArgumentException("Movie with id " + id + " not found");
     }
 }

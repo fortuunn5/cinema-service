@@ -67,7 +67,7 @@ public class SeatServiceImpl implements SeatService {
         if (seatRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Seat not found");
+        throw new IllegalArgumentException("Seat with id " + id + " not found");
     }
 
     @Override

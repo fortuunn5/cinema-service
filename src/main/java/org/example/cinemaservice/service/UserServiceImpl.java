@@ -93,6 +93,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("User not found");
+        throw new IllegalArgumentException("User with id " + id + " not found");
     }
 }
