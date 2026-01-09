@@ -8,7 +8,7 @@
         <sql>
             insert into role (id, role, description)
             values (1, 'ROLE_ADMIN', 'Полный контроль над системой.'),
-                   (2, 'ROLE_USER', 'user', 'Обычный пользователь, базовые права.');
+                   (2, 'ROLE_USER', 'Обычный пользователь, базовые права.');
         </sql>
     </changeSet>
 </databaseChangeLog>
