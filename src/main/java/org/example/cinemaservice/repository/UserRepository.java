@@ -4,13 +4,14 @@ import org.example.cinemaservice.dto.UserDto;
 import org.example.cinemaservice.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
     UserDto save(User newUser);
 
-    UserDto readById(Long id);
+    Optional<UserDto> readById(Long id);
 
-    UserDto readByContactEmail(String contactEmail);
+    Optional<UserDto> readByContactEmail(String contactEmail);
 
     List<UserDto> readAll();
 

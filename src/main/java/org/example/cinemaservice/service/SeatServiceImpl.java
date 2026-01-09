@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +38,8 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public SeatDto getSeatById(Long id) {
-        SeatDto seat = seatRepository.readById(id);
-        if (seat == null) {
-            throw new IllegalArgumentException("Seat not found");
-        }
-        return seat;
+        Optional<SeatDto> seatDto = seatRepository.readById(id);
+        return seatDto.orElseThrow(() -> new IllegalArgumentException("Seat with id " + id + " not found"));
     }
 
     @Override
@@ -51,12 +49,16 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public SeatDto updateSeat(Seat upSeat) {
-        //todo check
-//        if (upSeat.getId() == null || seatRepository.readById(upSeat.getId()) == null) {
-//            throw new IllegalArgumentException("Seat not found");
-//        }
-        seatPublisher.publishEvent(new SaveSeatEvent(upSeat.getId(), LocalDateTime.now(), upSeat.getHall().getId()));
-        return seatRepository.update(upSeat);
+        Seat seat = getSeatById(upSeat.getId()).toEntity();
+        if (upSeat.getNumber() != null) {
+            seat.setNumber(upSeat.getNumber());
+        }
+        if (upSeat.getRow() != null) {
+            seat.setRow(upSeat.getRow());
+        }
+
+        seatPublisher.publishEvent(new SaveSeatEvent(seat.getId(), LocalDateTime.now(), seat.getHall().getId()));
+        return seatRepository.update(seat);
     }
 
     @Override

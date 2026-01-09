@@ -14,6 +14,7 @@ import org.example.cinemaservice.model.Movie;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,8 +29,17 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public MovieDto readById(Long id) {
-        return MovieDto.ofEntity(em.find(Movie.class, id));
+    public Optional<MovieDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Movie movie = em.find(Movie.class, id);
+        if (movie != null) {
+            MovieDto movieDto = MovieDto.ofEntity(movie);
+            return Optional.of(movieDto);
+        }
+        return Optional.empty();
     }
 
     @Override

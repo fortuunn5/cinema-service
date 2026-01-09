@@ -6,11 +6,12 @@ import org.example.cinemaservice.dto.UpdateReservationStatusDto;
 import org.example.cinemaservice.model.Reservation;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository {
     ReservationDto save(Reservation reservation);
 
-    ReservationDto readById(Long id);
+    Optional<ReservationDto> readById(Long id);
 
     List<ReservationDto> readAll(@Nullable Long hallId,
                                  @Nullable Long seatId,

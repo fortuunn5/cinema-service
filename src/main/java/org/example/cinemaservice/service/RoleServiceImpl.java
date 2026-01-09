@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+
 //todo: нужен ли контроллер
 @Service
 @RequiredArgsConstructor
@@ -25,20 +27,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto getRoleById(Long id) {
-        RoleDto role = roleRepository.readById(id);
-        if (role == null) {
-            throw new IllegalArgumentException("Role not found");
-        }
-        return role;
+        Optional<RoleDto> roleDto = roleRepository.readById(id);
+        return roleDto.orElseThrow(() -> new IllegalArgumentException("Role with id " + id + " not found"));
     }
 
     @Override
     public RoleDto getRoleByName(String roleName) {
-        RoleDto role = roleRepository.readByRoleName(roleName);
-        if (role == null) {
-            throw new IllegalArgumentException("Role not found");
-        }
-        return role;
+        Optional<RoleDto> role = roleRepository.readByRoleName(roleName);
+        return role.orElseThrow(() -> new IllegalArgumentException("Role with name " + roleName + " not found"));
     }
 
     @Override
@@ -48,7 +44,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto updateRole(Role upRole) {
-        return roleRepository.update(upRole);
+        Role roleDto = getRoleById(upRole.getId()).toEntity();
+
+        if (upRole.getRole() != null) {
+            roleDto.setRole(upRole.getRole());
+        }
+        if (upRole.getDescription() != null) {
+            roleDto.setDescription(upRole.getDescription());
+        }
+        return roleRepository.update(roleDto);
     }
 
     @Override

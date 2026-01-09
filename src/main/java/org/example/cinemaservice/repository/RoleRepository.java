@@ -4,13 +4,14 @@ import org.example.cinemaservice.dto.RoleDto;
 import org.example.cinemaservice.model.Role;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoleRepository {
     RoleDto save(Role newRole);
 
-    RoleDto readById(Long id);
+    Optional<RoleDto> readById(Long id);
 
-    RoleDto readByRoleName(String roleName);
+    Optional<RoleDto> readByRoleName(String roleName);
 
     List<RoleDto> readAll();
 

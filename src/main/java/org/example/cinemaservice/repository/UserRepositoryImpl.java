@@ -10,6 +10,7 @@ import org.example.cinemaservice.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,16 +25,34 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDto readById(Long id) {
-        return UserDto.ofEntity(em.find(User.class, id));
+    public Optional<UserDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        User user = em.find(User.class, id);
+        if (user != null) {
+            UserDto userDto = UserDto.ofEntity(user);
+            return Optional.of(userDto);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public UserDto readByContactEmail(String contactEmail) {
+    public Optional<UserDto> readByContactEmail(String contactEmail) {
+        if (contactEmail == null) {
+            throw new IllegalArgumentException("Email cannot be null");
+        }
+
         TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE contactEmail=:contactEmail", User.class);
         query.setParameter("contactEmail", contactEmail);
-        User singleResult = query.getSingleResult();
-        return UserDto.ofEntity(singleResult);
+        User user = query.getSingleResult();
+        if (user != null) {
+            UserDto userDto = UserDto.ofEntity(user);
+            return Optional.of(userDto);
+        }
+
+        return Optional.empty();
     }
 
     @Override

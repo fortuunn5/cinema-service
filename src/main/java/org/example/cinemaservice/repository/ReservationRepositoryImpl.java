@@ -12,6 +12,7 @@ import org.example.cinemaservice.model.Reservation;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,8 +27,17 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public ReservationDto readById(Long id) {
-        return ReservationDto.ofEntity(em.find(Reservation.class, id));
+    public Optional<ReservationDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Reservation reservation = em.find(Reservation.class, id);
+        if (reservation != null) {
+            ReservationDto reservationDto = ReservationDto.ofEntity(reservation);
+            return Optional.of(reservationDto);
+        }
+        return Optional.empty();
     }
 
     @Override

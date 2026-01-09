@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +32,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDto getMovieById(Long id) {
-        MovieDto movie = movieRepository.readById(id);
-        if (movie == null) {
-            throw new IllegalArgumentException("Movie not found");
-        }
-        return movie;
+        Optional<MovieDto> movieDto = movieRepository.readById(id);
+        return movieDto.orElseThrow(() -> new IllegalArgumentException("Movie with id " + id + " not found"));
     }
 
     @Override
@@ -45,11 +43,20 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDto updateMovie(Movie upMovie) {
-        //todo check
-//        if (upMovie.getId() == null || movieRepository.readById(upMovie.getId()) == null) {
-//            throw new IllegalArgumentException("Movie not found");
-//        }
-        return movieRepository.update(upMovie);
+        MovieDto movieDto = getMovieById(upMovie.getId());
+
+        Movie movie = movieDto.toEntity();
+        if (upMovie.getName() != null) {
+            movie.setName(upMovie.getName());
+        }
+        if (upMovie.getDuration() != null) {
+            movie.setDuration(upMovie.getDuration());
+        }
+        if (upMovie.getDescription() != null) {
+            movie.setDescription(upMovie.getDescription());
+        }
+
+        return movieRepository.update(movie);
     }
 
     @Override

@@ -5,11 +5,13 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.example.cinemaservice.dto.RoleDto;
 import org.example.cinemaservice.model.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,14 +26,33 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public RoleDto readById(Long id) {
-        return RoleDto.ofEntity(em.find(Role.class, id));
+    public Optional<RoleDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Role role = em.find(Role.class, id);
+        if (role != null) {
+            RoleDto roleDto = RoleDto.ofEntity(role);
+            return Optional.of(roleDto);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public RoleDto readByRoleName(String roleName) {
+    public Optional<RoleDto> readByRoleName(String roleName) {
+        if (StringUtils.isBlank(roleName)) {
+            throw new IllegalArgumentException("Role name cannot be null");
+        }
+
         TypedQuery<Role> query = em.createQuery("SELECT r FROM Role r WHERE r.role=:roleName", Role.class);
-        return RoleDto.ofEntity(query.getSingleResult());
+        query.setParameter("roleName", roleName);
+        Role role = query.getSingleResult();
+        if (role != null) {
+            RoleDto roleDto = RoleDto.ofEntity(role);
+            return Optional.of(roleDto);
+        }
+        return Optional.empty();
     }
 
     @Override

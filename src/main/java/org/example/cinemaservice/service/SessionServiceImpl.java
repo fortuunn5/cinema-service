@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +39,8 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto getSessionById(Long id) {
-        SessionDto session = sessionRepository.readById(id);
-        if (session == null) {
-            throw new IllegalArgumentException("Session not found");
-        }
-        return session;
+        Optional<SessionDto> sessionDto = sessionRepository.readById(id);
+        return sessionDto.orElseThrow(() -> new IllegalArgumentException("Session with id " + id + " not found"));
     }
 
     @Override
@@ -52,14 +50,32 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto updateSession(Session upSession) {
-        if (upSession.getId() == null || sessionRepository.readById(upSession.getId()) == null) {
-            throw new IllegalArgumentException("Session not found");
+        Session session = getSessionById(upSession.getId()).toEntity();
+
+        if (upSession.getMovie() != null) {
+            session.setMovie(upSession.getMovie());
         }
-        if (hasConflictedTime(upSession)) {
+        if (upSession.getHall() != null) {
+            session.setHall(upSession.getHall());
+        }
+        if (upSession.getDuration() != null) {
+            session.setDuration(upSession.getDuration());
+        }
+        if (upSession.getPrice() != null) {
+            session.setPrice(upSession.getPrice());
+        }
+        if (upSession.getStartDate() != null) {
+            session.setStartDate(upSession.getStartDate());
+        }
+        if (upSession.getDisplayFormat() != null) {
+            session.setDisplayFormat(upSession.getDisplayFormat());
+        }
+
+        if (hasConflictedTime(session)) {
             throw new IllegalArgumentException("Session has conflicted time");
         }
-        sessionPublisher.publishEvent(new SaveSessionEvent(upSession, LocalDateTime.now()));
-        return sessionRepository.update(upSession);
+        sessionPublisher.publishEvent(new SaveSessionEvent(session, LocalDateTime.now()));
+        return sessionRepository.update(session);
     }
 
     @Override

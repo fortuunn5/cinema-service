@@ -2,13 +2,16 @@ package org.example.cinemaservice.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.example.cinemaservice.dto.UserDto;
 import org.example.cinemaservice.repository.UserRepository;
 import org.example.cinemaservice.utils.SecurityUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-//todo: переделать проверки контекста
+import java.util.Optional;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,44 +24,44 @@ public class UserServiceImpl implements UserService {
         if (newUser.getId() != null) {
             throw new IllegalArgumentException("User id already exists");
         }
-        if (userRepository.readByContactEmail(newUser.getContactEmail()) != null) {
-            throw new IllegalArgumentException("Contact email already exists");
+        try {
+            newUser.setRoleId(roleService.getRoleByName("ROLE_USER").getId());
+            return userRepository.save(newUser.toEntity());
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
-        //todo:доделать
-//        newUser.setRole(Role.USER);
-        return userRepository.save(newUser.toEntity());
     }
 
     @Override
     public UserDto getUserById(Long id) {
-        if (SecurityUtils.getCurrentRole(this, this.roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(this).equals(id)) {
-            throw new IllegalArgumentException("Not enough rights");
+        Optional<UserDto> userById = userRepository.readById(id);
+        if (userById.isEmpty()) {
+            throw new IllegalArgumentException("User with id " + id + " not found");
         }
-        UserDto userById = userRepository.readById(id);
-        if (userById == null) {
-            throw new IllegalArgumentException("User not found");
+        if (SecurityUtils.hasRole("ROLE_ADMIN") || StringUtils.equalsIgnoreCase(userById.get().getContactEmail(), SecurityUtils.getCurrentUserEmail())) {
+            return userById.get();
         }
-        return userById;
+        throw new RuntimeException("Not enough rights");
     }
 
     @Override
     public UserDto getUserByContactEmail(String contactEmail) {
-//        if (SecurityUtils.getCurrentRole(this, this.roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserEmail().equals(contactEmail)) {
-//            throw new IllegalArgumentException("Not enough rights");
-//        }
-        if (SecurityUtils.hasRole("ROLE_ADMIN")) {
-            return new UserDto();
+        Optional<UserDto> userByEmail = userRepository.readByContactEmail(contactEmail);
+        if (userByEmail.isEmpty()) {
+            throw new IllegalArgumentException("User with email " + contactEmail + " not found");
         }
-        UserDto user = userRepository.readByContactEmail(contactEmail);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }//todo доделать
-        return user;
+        if (SecurityUtils.hasRole("ROLE_ADMIN") || StringUtils.equalsIgnoreCase(userByEmail.get().getContactEmail(), SecurityUtils.getCurrentUserEmail())) {
+            return userByEmail.get();
+        }
+        throw new RuntimeException("Not enough rights");
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return userRepository.readByContactEmail(email);
+        Optional<UserDto> userDto = userRepository.readByContactEmail(email);
+        return userDto.orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
     }
 
     @Override
@@ -68,14 +71,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto upUser) {
-        if (SecurityUtils.getCurrentRole(this, this.roleService).getRole().equals("ROLE_USER") && !SecurityUtils.getCurrentUserId(this).equals(upUser.getId())) {
-            throw new IllegalArgumentException("Not enough rights");
+        UserDto userDto = getUserById(upUser.getId());
+        if (upUser.getContactEmail() != null) {
+            userDto.setContactEmail(upUser.getContactEmail());
         }
-        UserDto userByContactEmail = userRepository.readByContactEmail(upUser.getContactEmail());
-        if (userByContactEmail != null && !userByContactEmail.getId().equals(upUser.getId())) {
-            throw new IllegalArgumentException("Contact email already exists");
+        if (upUser.getPassword() != null) {
+            userDto.setPassword(upUser.getPassword());
         }
-        return userRepository.update(upUser.toEntity());
+        if (upUser.getRoleId() != null && SecurityUtils.hasRole("ROLE_ADMIN")) {
+            userDto.setRoleId(upUser.getRoleId());
+        }
+
+        return userRepository.update(userDto.toEntity());
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.example.cinemaservice.model.Status;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,8 +28,17 @@ public class SeatRepositoryImpl implements SeatRepository {
     }
 
     @Override
-    public SeatDto readById(Long id) {
-        return SeatDto.ofEntity(em.find(Seat.class, id));
+    public Optional<SeatDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Seat seat = em.find(Seat.class, id);
+        if (seat != null) {
+            SeatDto seatDto = SeatDto.ofEntity(seat);
+            return Optional.of(seatDto);
+        }
+        return Optional.empty();
     }
 
     @Override

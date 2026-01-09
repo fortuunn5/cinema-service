@@ -6,11 +6,12 @@ import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.model.Seat;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SeatRepository {
     SeatDto save(Seat newSeat);
 
-    SeatDto readById(Long id);
+    Optional<SeatDto> readById(Long id);
 
     List<SeatDto> readAll(@Nullable Long hallId);
 

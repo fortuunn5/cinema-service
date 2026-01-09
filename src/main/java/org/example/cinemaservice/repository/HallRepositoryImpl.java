@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,8 +26,17 @@ public class HallRepositoryImpl implements HallRepository {
     }
 
     @Override
-    public HallDto readById(Long id) {
-        return HallDto.ofEntity(em.find(Hall.class, id));
+    public Optional<HallDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Hall hall = em.find(Hall.class, id);
+        if (hall != null) {
+            HallDto hallDto = HallDto.ofEntity(hall);
+            return Optional.of(hallDto);
+        }
+        return Optional.empty();
     }
 
     @Override
