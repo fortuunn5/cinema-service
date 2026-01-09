@@ -34,6 +34,7 @@ public class Session {
     private Integer price;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "hall_id")
     private Hall hall;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

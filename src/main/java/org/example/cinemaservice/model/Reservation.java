@@ -35,6 +35,7 @@ public class Reservation {
     private List<Seat> seats;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
     private Session session;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
