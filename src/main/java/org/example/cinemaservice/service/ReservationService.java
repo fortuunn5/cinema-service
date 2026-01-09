@@ -8,7 +8,6 @@ import org.example.cinemaservice.model.Reservation;
 import java.util.List;
 
 public interface ReservationService {
-    ReservationDto createReservation(Reservation newReservation);
 
     ReservationDto createReservation(ReservationDto newReservation);
 
