@@ -25,7 +25,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/reservations/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/reservations/changeStatus").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/users/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/users").authenticated()
                         .anyRequest().hasRole("ADMIN")
                 )
                 .httpBasic(Customizer.withDefaults())
