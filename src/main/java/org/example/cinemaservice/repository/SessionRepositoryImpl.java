@@ -123,7 +123,7 @@ public class SessionRepositoryImpl implements SessionRepository {
                             )
                 """;
         if (sessionId != null) {
-            queryString += " AND s.session.id = :sessionId ";
+            queryString += " AND NOT s.id = :sessionId ";
         }
         queryString += ")";
         TypedQuery<Boolean> query = em.createQuery(queryString, Boolean.class);
