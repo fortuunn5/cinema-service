@@ -1,35 +1,28 @@
 package org.example.cinemaservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-//todo: добавить поле "доступен ли"
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Hall {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String role;
 
-    @Column(nullable = false)
-    @Min(2)
-    private Integer capacity;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @OneToMany(mappedBy = "hall", fetch = FetchType.LAZY)
-    private List<Seat> seats;
-
-    public Hall(Long id) {
+    public Role(Long id) {
         this.id = id;
     }
 }

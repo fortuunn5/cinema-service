@@ -2,6 +2,7 @@ package org.example.cinemaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cinemaservice.dto.ReservationDto;
+import org.example.cinemaservice.dto.UpdateReservationStatusDto;
 import org.example.cinemaservice.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +27,23 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDto>> getAllReservations() {
-        return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
+    public ResponseEntity<List<ReservationDto>> getAllReservations(@RequestParam(name = "hallId", required = false) Long hallId,
+                                                                   @RequestParam(name = "seatId", required = false) Long seatId,
+                                                                   @RequestParam(name = "movieId", required = false) Long movieId,
+                                                                   @RequestParam(name = "sessionId", required = false) Long sessionId,
+                                                                   @RequestParam(name = "userId", required = false) Long userId) {
+        return new ResponseEntity<>(reservationService.getAllReservations(hallId, seatId, movieId, sessionId, userId), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<ReservationDto> updateReservation(@RequestBody ReservationDto upReservation) {
         return new ResponseEntity<>(reservationService.updateReservation(upReservation.toEntity()), HttpStatus.OK);
+    }
+
+    @PutMapping("/changeStatus")
+    public ResponseEntity<Void> updateReservationStatus(@RequestBody UpdateReservationStatusDto updateReservationStatusDto) {
+        reservationService.updateReservationStatus(updateReservationStatusDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -12,9 +12,7 @@ public interface MovieService {
 
     MovieDto getMovieById(Long id);
 
-    MovieDto getMovieByName(String name);
-
-    List<MovieDto> getMovies(@Nullable List<Genre> genres);
+    List<MovieDto> getMovies(@Nullable List<Genre> genres, @Nullable String name);
 
     MovieDto updateMovie(Movie upMovie);
 

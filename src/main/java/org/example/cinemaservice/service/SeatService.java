@@ -1,5 +1,6 @@
 package org.example.cinemaservice.service;
 
+import jakarta.annotation.Nullable;
 import org.example.cinemaservice.dto.SeatDto;
 import org.example.cinemaservice.dto.SeatWithIsReservedDto;
 import org.example.cinemaservice.model.Seat;
@@ -11,9 +12,7 @@ public interface SeatService {
 
     SeatDto getSeatById(Long id);
 
-    List<SeatDto> getAllSeats();
-
-    List<SeatDto> getAllSeatsByHallId(Long hallId);
+    List<SeatDto> getAllSeats(@Nullable Long hallId);
 
     SeatDto updateSeat(Seat upSeat);
 

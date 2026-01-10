@@ -17,7 +17,7 @@ import java.util.List;
 public class HallDto {
     private Long id;
     private String name;
-    private int capacity;
+    private Integer capacity;
     private List<Long> seatsId;
 
     public Hall toEntity() {

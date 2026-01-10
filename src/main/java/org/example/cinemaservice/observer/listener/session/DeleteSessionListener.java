@@ -23,7 +23,12 @@ public class DeleteSessionListener {
             throw new IllegalArgumentException("Seat id is null");
         }
 
-        List<ReservationDto> reservationsBySession = reservationService.getAllReservationsBySessionId(deleteSessionEvent.getSessionId());
+        List<ReservationDto> reservationsBySession = reservationService.getAllReservations(
+                null,
+                null,
+                null,
+                deleteSessionEvent.getSessionId(),
+                null);
         if (CollectionUtils.isNotEmpty(reservationsBySession)) {
             throw new IllegalArgumentException("Seat has reservations");
         }

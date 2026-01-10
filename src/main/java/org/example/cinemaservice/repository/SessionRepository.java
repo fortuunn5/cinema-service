@@ -6,11 +6,12 @@ import org.example.cinemaservice.model.Session;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface SessionRepository {
     SessionDto save(Session newSession);
 
-    SessionDto readById(Long id);
+    Optional<SessionDto> readById(Long id);
 
     List<SessionDto> readAll(@Nullable Long movieId, @Nullable Date date, @Nullable Long hallId);
 

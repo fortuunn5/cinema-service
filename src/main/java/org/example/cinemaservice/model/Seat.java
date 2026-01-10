@@ -18,10 +18,10 @@ public class Seat {
     private Long id;
 
     @Column(nullable = false)
-    private int row;
+    private Integer row;
 
     @Column(nullable = false)
-    private int number;
+    private Integer number;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "hall_id")

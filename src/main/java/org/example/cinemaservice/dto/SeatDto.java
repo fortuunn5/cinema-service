@@ -13,8 +13,8 @@ import org.example.cinemaservice.model.Seat;
 @Setter
 public class SeatDto {
     private Long id;
-    private int row;
-    private int number;
+    private Integer row;
+    private Integer number;
     private Long hallId;
 
     public Seat toEntity() {

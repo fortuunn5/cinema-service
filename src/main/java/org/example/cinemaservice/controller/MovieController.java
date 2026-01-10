@@ -6,7 +6,15 @@ import org.example.cinemaservice.model.Genre;
 import org.example.cinemaservice.service.MovieService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,14 +34,10 @@ public class MovieController {
         return new ResponseEntity<>(movieService.getMovieById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<MovieDto> getMovieByName(@PathVariable(name = "name") String name) {
-        return new ResponseEntity<>(movieService.getMovieByName(name), HttpStatus.OK);
-    }
-
     @GetMapping
-    public ResponseEntity<List<MovieDto>> getAllMovies(@RequestParam(name = "genres", required = false) List<Genre> genres) {
-        return new ResponseEntity<>(movieService.getMovies(genres), HttpStatus.OK);
+    public ResponseEntity<List<MovieDto>> getAllMovies(@RequestParam(name = "genres", required = false) List<Genre> genres,
+                                                       @RequestParam(name = "name", required = false) String name) {
+        return new ResponseEntity<>(movieService.getMovies(genres, name), HttpStatus.OK);
     }
 
     @PutMapping

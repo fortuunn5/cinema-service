@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +32,8 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public HallDto getHallById(Long id) {
-        HallDto hall = hallRepository.readById(id);
-        if (hall == null) {
-            throw new IllegalArgumentException("Hall not found");
-        }
-        return hall;
+        Optional<HallDto> hallDto = hallRepository.readById(id);
+        return hallDto.orElseThrow(() -> new IllegalArgumentException("Hall with id " + id + " not found"));
     }
 
     @Override
@@ -45,12 +43,16 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public HallDto updateHall(Hall upHall) {
-        //todo check
-//        if (upHall.getId() == null || hallRepository.readById(upHall.getId()) == null) {
-//            throw new IllegalArgumentException("Hall not found");
-//        }
-        hallPublisher.publishEvent(new SaveHallEvent(upHall, LocalDateTime.now()));
-        return hallRepository.update(upHall);
+        Hall hall = getHallById(upHall.getId()).toEntity();
+        if (upHall.getName() != null) {
+            hall.setName(upHall.getName());
+        }
+        if (upHall.getCapacity() != null) {
+            hall.setCapacity(upHall.getCapacity());
+        }
+
+        hallPublisher.publishEvent(new SaveHallEvent(hall, LocalDateTime.now()));
+        return hallRepository.update(hall);
     }
 
     @Override
@@ -59,6 +61,6 @@ public class HallServiceImpl implements HallService {
         if (hallRepository.deleteById(id)) {
             return true;
         }
-        throw new IllegalArgumentException("Hall not found");
+        throw new IllegalArgumentException("Hall with id " + id + " not found");
     }
 }

@@ -8,6 +8,7 @@ import org.example.cinemaservice.model.Reservation;
 import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.model.Session;
 import org.example.cinemaservice.model.Status;
+import org.example.cinemaservice.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,26 +19,29 @@ import java.util.List;
 @Setter
 public class ReservationDto {
     private Long id;
-    private String contactEmail;
     private Status status;
-    private int price;
+    private Integer price;
     private List<Long> seatsId;
     private Long sessionId;
+    private Long userId;
 
     public Reservation toEntity() {
         Reservation reservation = new Reservation();
         reservation.setId(id);
-        reservation.setContactEmail(contactEmail);
         reservation.setStatus(status);
         reservation.setPrice(price);
         List<Seat> seats = new ArrayList<>();
         if (seatsId != null) {
             for (Long id : seatsId) {
-                seats.add(new Seat(id));
+                Seat seat = new Seat(id);
+                seats.add(seat);
             }
         }
         reservation.setSeats(seats);
-        reservation.setSession(new Session(sessionId));
+        Session session = new Session(sessionId);
+        reservation.setSession(session);
+        User user = new User(userId);
+        reservation.setUser(user);
         return reservation;
     }
 
@@ -45,7 +49,6 @@ public class ReservationDto {
         if (reservation != null) {
             ReservationDto reservationDto = new ReservationDto();
             reservationDto.setId(reservation.getId());
-            reservationDto.setContactEmail(reservation.getContactEmail());
             reservationDto.setStatus(reservation.getStatus());
             reservationDto.setPrice(reservation.getPrice());
             List<Long> seatsId = new ArrayList<>();
@@ -54,6 +57,7 @@ public class ReservationDto {
             }
             reservationDto.setSeatsId(seatsId);
             reservationDto.setSessionId(reservation.getSession().getId());
+            reservationDto.setUserId(reservation.getUser().getId());
             return reservationDto;
         }
         return null;

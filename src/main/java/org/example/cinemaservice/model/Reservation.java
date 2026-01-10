@@ -1,7 +1,6 @@
 package org.example.cinemaservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,24 +19,32 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Email(message = "Email not correct")
-    private String contactEmail;
-
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(nullable = false)
     @Min(0)
-    private int price;
+    private Integer price;
 
     @ManyToMany
-    @JoinTable(name = "reservation_seat")
-    @Column(nullable = false)
+    @JoinTable(
+            name = "reservation_seat",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "seat_id")
+    )
     private List<Seat> seats;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
     private Session session;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Reservation(Long id) {
+        this.id = id;
+    }
 
     public int getSeatsCount() {
         return seats.size();

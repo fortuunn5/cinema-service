@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -30,8 +31,17 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public SessionDto readById(Long id) {
-        return SessionDto.ofEntity(em.find(Session.class, id));
+    public Optional<SessionDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        Session session = em.find(Session.class, id);
+        if (session != null) {
+            SessionDto sessionDto = SessionDto.ofEntity(session);
+            return Optional.of(sessionDto);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -113,7 +123,7 @@ public class SessionRepositoryImpl implements SessionRepository {
                             )
                 """;
         if (sessionId != null) {
-            queryString += " AND s.session.id = :sessionId ";
+            queryString += " AND NOT s.id = :sessionId ";
         }
         queryString += ")";
         TypedQuery<Boolean> query = em.createQuery(queryString, Boolean.class);

@@ -1,5 +1,6 @@
 package org.example.cinemaservice.repository;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -11,8 +12,8 @@ import org.example.cinemaservice.model.Seat;
 import org.example.cinemaservice.model.Status;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,25 +28,34 @@ public class SeatRepositoryImpl implements SeatRepository {
     }
 
     @Override
-    public SeatDto readById(Long id) {
-        return SeatDto.ofEntity(em.find(Seat.class, id));
-    }
-
-    @Override
-    public List<SeatDto> readAll() {
-        TypedQuery<Seat> query = em.createQuery("SELECT s FROM Seat s ", Seat.class);
-        List<SeatDto> seatDtoList = new ArrayList<>();
-        for (Seat seat : query.getResultList()) {
-            seatDtoList.add(SeatDto.ofEntity(seat));
+    public Optional<SeatDto> readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
         }
-        return seatDtoList;
+
+        Seat seat = em.find(Seat.class, id);
+        if (seat != null) {
+            SeatDto seatDto = SeatDto.ofEntity(seat);
+            return Optional.of(seatDto);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public List<SeatDto> readAllByHallId(Long hallId) {
-        TypedQuery<Seat> query = em.createQuery("SELECT s FROM Seat s WHERE s.hall.id = :hallId", Seat.class);
-        query.setParameter("hallId", hallId);
-        return query.getResultList().stream().map(SeatDto::ofEntity).toList();
+    public List<SeatDto> readAll(@Nullable Long hallId) {
+        String readAll = "SELECT s FROM Seat s WHERE 1=1";
+        if (hallId != null) {
+            readAll += " AND s.hall.id = :hallId";
+        }
+        TypedQuery<Seat> query = em.createQuery(readAll, Seat.class);
+
+        if (hallId != null) {
+            query.setParameter("hallId", hallId);
+        }
+
+        return query.getResultList().stream()
+                .map(SeatDto::ofEntity)
+                .toList();
     }
 
     @Override
@@ -59,13 +69,6 @@ public class SeatRepositoryImpl implements SeatRepository {
         query.setParameter("id", id);
         int count = query.executeUpdate();
         return count != 0;
-    }
-
-    @Override
-    public int deleteAllByHallId(Long hallId) {
-        Query deleteSeatsQuery = em.createQuery("DELETE FROM Seat s WHERE s.hall.id = :hallId");
-        deleteSeatsQuery.setParameter("hallId", hallId);
-        return deleteSeatsQuery.executeUpdate();
     }
 
     @Override

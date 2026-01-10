@@ -23,7 +23,12 @@ public class DeleteHallListener {
     @Order(3)
     public void checkReservations(DeleteHallEvent deleteHallEvent) {
         validate(deleteHallEvent);
-        List<ReservationDto> reservationsByHall = reservationService.getAllReservationsByHallId(deleteHallEvent.getHallId());
+        List<ReservationDto> reservationsByHall = reservationService.getAllReservations(
+                deleteHallEvent.getHallId(),
+                null,
+                null,
+                null,
+                null);
         if (!reservationsByHall.isEmpty()) {
             throw new IllegalArgumentException("Hall has reservations");
         }
